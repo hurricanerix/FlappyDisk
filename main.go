@@ -6,18 +6,19 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"image/draw"
 	_ "image/png"
 	"log"
-	"os"
 	"runtime"
 	"strings"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/hurricanerix/flappy/gen"
 )
 
 const windowWidth = 800
@@ -195,12 +196,12 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 	return shader, nil
 }
 
-func newTexture(file string) (uint32, error) {
-	imgFile, err := os.Open(file)
+func newTexture(name string) (uint32, error) {
+	imgFile, err := gen.Asset(name)
 	if err != nil {
 		return 0, err
 	}
-	img, _, err := image.Decode(imgFile)
+	img, _, err := image.Decode(bytes.NewReader(imgFile))
 	if err != nil {
 		return 0, err
 	}

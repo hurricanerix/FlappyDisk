@@ -3,6 +3,13 @@ Flappy Disk
 
 A flappy bird clone written in Go.
 
+Executing code
+--------------
+
+```
+$ make run
+```
+
 Credits
 -------
 
