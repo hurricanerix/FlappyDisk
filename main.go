@@ -79,7 +79,7 @@ func main() {
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	texture, err := newTexture("square.png")
+	texture, err := newTexture("assets/square.png")
 	if err != nil {
 		panic(err)
 	}
