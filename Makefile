@@ -24,6 +24,7 @@ bin/$(EXE):	main.go gen/assets.go
 	mkdir -p bin
 	mv main bin/$(EXE)
 
+gen: gen/assets.go
 gen/assets.go: $(shell find assets -type f)
 	mkdir -p gen
 	go-bindata -pkg gen -o gen/assets.go assets/
