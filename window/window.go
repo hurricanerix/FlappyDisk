@@ -11,19 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package main
+// Package window provides windowing functionaltiy.
 
-import (
-	"github.com/hurricanerix/FlappyDisk/app"
-	"github.com/hurricanerix/FlappyDisk/window"
-)
+package window
 
-func main() {
-	a := app.Config{
-		Window: window.Config{
-			Width:  800,
-			Height: 600,
-		},
-	}
-	a.Run()
+// Config for window
+type Config struct {
+	Width  int
+	Height int
 }

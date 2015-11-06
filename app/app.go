@@ -29,6 +29,7 @@ import (
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/FlappyDisk/gen"
+	"github.com/hurricanerix/FlappyDisk/window"
 )
 
 func init() {
@@ -38,8 +39,7 @@ func init() {
 
 // Config contains settings for running the app
 type Config struct {
-	Width  int
-	Height int
+	Window window.Config
 }
 
 // Run the application
@@ -54,7 +54,7 @@ func (a Config) Run() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 2)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-	window, err := glfw.CreateWindow(a.Width, a.Height, "Cube", nil, nil)
+	window, err := glfw.CreateWindow(a.Window.Width, a.Window.Height, "Cube", nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +76,7 @@ func (a Config) Run() {
 
 	gl.UseProgram(program)
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(a.Width)/float32(a.Height), 0.1, 10.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(a.Window.Width)/float32(a.Window.Height), 0.1, 10.0)
 	projectionUniform := gl.GetUniformLocation(program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
