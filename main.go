@@ -14,16 +14,30 @@
 package main
 
 import (
+	"os"
+	"os/user"
+
 	"github.com/hurricanerix/FlappyDisk/app"
-	"github.com/hurricanerix/FlappyDisk/window"
+	"gopkg.in/gcfg.v1"
 )
 
+func getConfigFileName() string {
+	usr, _ := user.Current()
+	return usr.HomeDir + "/.config/flappy-disk/app.conf"
+}
+
 func main() {
-	a := app.Config{
-		Window: window.Config{
-			Width:  800,
-			Height: 600,
-		},
+	configFile := getConfigFileName()
+
+	var a app.Config
+	err := gcfg.ReadFileInto(&a, configFile)
+	if err != nil {
+		// TODO: If does not exist, create it from default.conf instead of exiting.
+		println(err)
+		os.Exit(1)
 	}
+
+	// TODO: Verify config settings are valid.
+
 	a.Run()
 }
