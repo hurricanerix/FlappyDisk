@@ -17,6 +17,7 @@ package window
 
 // Config for window
 type Config struct {
-	Width  int
-	Height int
+	Width      int
+	Height     int
+	FullScreen bool
 }

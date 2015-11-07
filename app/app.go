@@ -42,14 +42,7 @@ type Config struct {
 	Window window.Config
 }
 
-/*
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-}
-*/
-func quit_callback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func quitCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
 		w.SetShouldClose(true)
 	}
@@ -67,9 +60,15 @@ func (a Config) Run() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 2)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-	// TODO: Maybe choose monitor based on config?
-	// http://www.glfw.org/docs/latest/monitor.html#monitor_monitors
-	window, err := glfw.CreateWindow(a.Window.Width, a.Window.Height, "Flappy Disk", glfw.GetPrimaryMonitor(), nil)
+
+	var monitor *glfw.Monitor = nil
+	if a.Window.FullScreen {
+		// TODO: Maybe choose monitor based on config?
+		// http://www.glfw.org/docs/latest/monitor.html#monitor_monitors
+		monitor = glfw.GetPrimaryMonitor()
+	}
+
+	window, err := glfw.CreateWindow(a.Window.Width, a.Window.Height, "Flappy Disk", monitor, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -83,7 +82,7 @@ func (a Config) Run() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
-	window.SetKeyCallback(quit_callback)
+	window.SetKeyCallback(quitCallback)
 	// Configure the vertex and fragment shaders
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
