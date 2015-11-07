@@ -19,7 +19,7 @@ default: bin/$(EXE)
 run: bin/$(EXE)
 	./bin/$(EXE)
 
-bin/$(EXE):	main.go gen/assets.go
+bin/$(EXE):	$(shell find . -name "*.go" -type f)
 	go build main.go
 	mkdir -p bin
 	mv main bin/$(EXE)
