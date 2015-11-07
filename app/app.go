@@ -67,7 +67,9 @@ func (a Config) Run() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 2)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-	window, err := glfw.CreateWindow(a.Window.Width, a.Window.Height, "Flappy Disk", nil, nil)
+	// TODO: Maybe choose monitor based on config?
+	// http://www.glfw.org/docs/latest/monitor.html#monitor_monitors
+	window, err := glfw.CreateWindow(a.Window.Width, a.Window.Height, "Flappy Disk", glfw.GetPrimaryMonitor(), nil)
 	if err != nil {
 		panic(err)
 	}
