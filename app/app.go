@@ -42,6 +42,19 @@ type Config struct {
 	Window window.Config
 }
 
+/*
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}
+*/
+func quit_callback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	if key == glfw.KeyEscape && action == glfw.Press {
+		w.SetShouldClose(true)
+	}
+}
+
 // Run the application
 func (a Config) Run() {
 	if err := glfw.Init(); err != nil {
@@ -68,6 +81,7 @@ func (a Config) Run() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
+	window.SetKeyCallback(quit_callback)
 	// Configure the vertex and fragment shaders
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
