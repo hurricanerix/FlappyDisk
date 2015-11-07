@@ -1,7 +1,7 @@
 Flappy Disk
 ===========
 
-A flappy bird clone written in Go.
+A flappy bird clone written in Go for [Extra-Life](http://www.extra-life.org/participant/hurricanerix).
 
 Building
 --------
