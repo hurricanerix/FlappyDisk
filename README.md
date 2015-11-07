@@ -28,5 +28,7 @@ $ make run
 Credits
 -------
 
+[*.pyxel assets created with Pyxel Edit](http://pyxeledit.com/)
+
 [Original OpenGL code](https://github.com/go-gl/examples/tree/master/glfw31-gl41core-cube)
 

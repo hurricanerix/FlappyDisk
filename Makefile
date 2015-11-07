@@ -19,7 +19,8 @@ default: bin/$(EXE)
 run: bin/$(EXE)
 	./bin/$(EXE)
 
-bin/$(EXE):	$(shell find . -name "*.go" -type f)
+# gen/assets.go is explicitly required in case the gen dir does not exist.
+bin/$(EXE):	gen/assets.go $(shell find . -name "*.go" -type f)
 	go build main.go
 	mkdir -p bin
 	mv main bin/$(EXE)
@@ -27,7 +28,7 @@ bin/$(EXE):	$(shell find . -name "*.go" -type f)
 gen: gen/assets.go
 gen/assets.go: $(shell find assets -type f)
 	mkdir -p gen
-	go-bindata -pkg gen -o gen/assets.go assets/
+	go-bindata -pkg gen -ignore="/*.pyxel" -o gen/assets.go assets/
 
 clean:
 	rm -rf bin gen
