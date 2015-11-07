@@ -14,30 +14,83 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"os"
 	"os/user"
+	"strings"
 
 	"github.com/hurricanerix/FlappyDisk/app"
+	"github.com/hurricanerix/FlappyDisk/gen"
 	"gopkg.in/gcfg.v1"
 )
 
-func getConfigFileName() string {
-	usr, _ := user.Current()
-	return usr.HomeDir + "/.config/flappy-disk/app.conf"
+var resetConf bool
+
+func init() {
+	flag.BoolVar(&resetConf, "reset-conf", false, "reset config to default")
 }
 
 func main() {
-	configFile := getConfigFileName()
+	flag.Parse()
+
+	configPath, configName := getConfigPathName()
+
+	if resetConf {
+		fmt.Println("resetting config to defaults")
+		err := createConfig()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
 
 	var a app.Config
-	err := gcfg.ReadFileInto(&a, configFile)
+	err := gcfg.ReadFileInto(&a, configPath+configName)
 	if err != nil {
-		// TODO: If does not exist, create it from default.conf instead of exiting.
-		println(err)
-		os.Exit(1)
+		if strings.Contains(err.Error(), "no such file or directory") {
+			createConfig()
+		} else {
+			fmt.Println(err)
+			os.Exit(2)
+		}
 	}
 
 	// TODO: Verify config settings are valid.
 
 	a.Run()
+}
+
+func getConfigPathName() (string, string) {
+	usr, _ := user.Current()
+	return usr.HomeDir + "/.config/flappy-disk/", "app.conf"
+}
+
+func createConfig() error {
+	path, name := getConfigPathName()
+	err := os.MkdirAll(path, 0777)
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(path + name)
+	defer f.Close()
+	if err != nil {
+		return err
+	}
+
+	configData, err := gen.Asset("assets/default.conf")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	_, err = f.Write(configData)
+	if err != nil {
+		return err
+	}
+
+	f.Sync()
+
+	return nil
 }
