@@ -25,8 +25,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/hurricanerix/FlappyDisk/actors/mountains"
 	"github.com/hurricanerix/FlappyDisk/actors/player"
-	"github.com/hurricanerix/FlappyDisk/sprite"
 	"github.com/hurricanerix/FlappyDisk/window"
 )
 
@@ -111,7 +111,7 @@ func (a Config) Run() {
 		panic(err)
 	}
 
-	mountains, err := sprite.New("assets/mountains.png")
+	mountains, err := mountains.New()
 	if err != nil {
 		panic(err)
 	}
@@ -136,7 +136,7 @@ func (a Config) Run() {
 		previousTime = time
 
 		player.Update(elapsed)
-		//mountains.Update(elapsed)
+		mountains.Update(elapsed)
 
 		// Render
 		gl.UseProgram(program)
