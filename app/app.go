@@ -103,13 +103,6 @@ func (a Config) Run() {
 	cameraUniform := gl.GetUniformLocation(program, gl.Str("camera\x00"))
 	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
 
-	model := mgl32.Ident4()
-	modelUniform := gl.GetUniformLocation(program, gl.Str("model\x00"))
-	gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-
-	textureUniform := gl.GetUniformLocation(program, gl.Str("tex\x00"))
-	gl.Uniform1i(textureUniform, 0)
-
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
 	player, err := sprite.New("assets/floppy.png")
@@ -117,7 +110,13 @@ func (a Config) Run() {
 		panic(err)
 	}
 
+	mountains, err := sprite.New("assets/mountains.png")
+	if err != nil {
+		panic(err)
+	}
+
 	player.Bind(program)
+	mountains.Bind(program)
 
 	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
@@ -125,24 +124,24 @@ func (a Config) Run() {
 	gl.ClearColor(0.527, 0.805, 0.918, 1.0)
 
 	//angle := 0.0
-	//previousTime := glfw.GetTime()
+	previousTime := glfw.GetTime()
 
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		// Update
-		//time := glfw.GetTime()
-		//elapsed := time - previousTime
-		//previousTime = time
+		time := glfw.GetTime()
+		elapsed := time - previousTime
+		previousTime = time
 
-		//angle += elapsed
-		//model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{1, 1, 1})
+		player.Update(elapsed)
+		mountains.Update(elapsed)
 
 		// Render
 		gl.UseProgram(program)
-		gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 		player.Draw()
+		mountains.Draw()
 
 		// Maintenance
 		window.SwapBuffers()
