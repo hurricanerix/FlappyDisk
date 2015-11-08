@@ -25,6 +25,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/hurricanerix/FlappyDisk/actors/player"
 	"github.com/hurricanerix/FlappyDisk/sprite"
 	"github.com/hurricanerix/FlappyDisk/window"
 )
@@ -105,7 +106,7 @@ func (a Config) Run() {
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	player, err := sprite.New("assets/floppy.png")
+	player, err := player.New()
 	if err != nil {
 		panic(err)
 	}
@@ -135,7 +136,7 @@ func (a Config) Run() {
 		previousTime = time
 
 		player.Update(elapsed)
-		mountains.Update(elapsed)
+		//mountains.Update(elapsed)
 
 		// Render
 		gl.UseProgram(program)

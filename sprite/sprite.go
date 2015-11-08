@@ -87,24 +87,17 @@ func (s *Sprite) Bind(program uint32) error {
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
-	model := mgl32.Ident4()
-	s.modelUniform = gl.GetUniformLocation(program, gl.Str("model\x00"))
-	gl.UniformMatrix4fv(s.modelUniform, 1, false, &model[0])
-
 	textureUniform := gl.GetUniformLocation(program, gl.Str("tex\x00"))
 	gl.Uniform1i(textureUniform, 0)
 
-	return nil
-}
-
-func (s *Sprite) Update(elapsed float64) error {
-	s.Rot += elapsed
-	//model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{1, 1, 1})
+	s.modelUniform = gl.GetUniformLocation(program, gl.Str("model\x00"))
 	gl.UniformMatrix4fv(s.modelUniform, 1, false, &s.model[0])
 	return nil
 }
 
 func (s *Sprite) Draw() {
+	s.model = mgl32.HomogRotate3D(float32(s.Rot), mgl32.Vec3{1, 1, 1})
+	gl.UniformMatrix4fv(s.modelUniform, 1, false, &s.model[0])
 
 	gl.BindVertexArray(s.vao)
 
