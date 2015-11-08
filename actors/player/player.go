@@ -52,11 +52,8 @@ func (p *Player) Bind(program uint32) {
 }
 
 func (p *Player) Update(elapsed float64) {
-	p.Sprite.Rot += elapsed
+	p.Sprite.Rot -= elapsed
 	p.Sprite.Scale = 0.5
-	p.Sprite.Pos[0] = 1.0
-	p.Sprite.Pos[1] = 1.0
-	p.Sprite.Pos[2] = 1.0
 }
 
 func (p *Player) Draw() {

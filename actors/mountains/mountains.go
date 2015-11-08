@@ -18,6 +18,7 @@ package mountains
 import (
 	"runtime"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/FlappyDisk/sprite"
 )
 
@@ -56,7 +57,9 @@ func (m *Mountains) Bind(program uint32) {
 }
 
 func (m *Mountains) Update(elapsed float64) {
-	m.Sprite[0].Rot -= elapsed
+	//m.Sprite[0].Rot -= elapsed
+	m.Sprite[0].Pos = mgl32.Vec3{0.0, 0.0, 0.0}
+	m.Sprite[0].Scale = 2.0
 }
 
 func (m *Mountains) Draw() {
