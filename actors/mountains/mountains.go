@@ -35,6 +35,7 @@ func New() (*Mountains, error) {
 		if err != nil {
 			return nil, err
 		}
+		si.Pos[2] = 5
 		s = append(s, si)
 	}
 

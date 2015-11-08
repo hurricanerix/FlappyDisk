@@ -133,8 +133,12 @@ func (a Config) Run() {
 	mountains.Bind(program)
 
 	// Configure global settings
-	gl.Enable(gl.DEPTH_TEST)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.BLEND)
 	gl.DepthFunc(gl.LESS)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.CULL_FACE)
+
 	gl.ClearColor(0.527, 0.805, 0.918, 1.0)
 
 	//angle := 0.0

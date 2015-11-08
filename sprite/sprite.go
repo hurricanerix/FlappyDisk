@@ -96,6 +96,7 @@ func (s *Sprite) Bind(program uint32) error {
 }
 
 func (s *Sprite) Draw() {
+	gl.Enable(gl.DEPTH_TEST)
 	s.model = (mgl32.Scale3D(float32(s.Scale), float32(s.Scale), 0.0)).Mul4(
 		mgl32.Translate3D(s.Pos[0], s.Pos[1], s.Pos[2])).Mul4(
 		mgl32.HomogRotate3DZ(float32(s.Rot)))
@@ -123,8 +124,6 @@ func newTexture(b []byte) (uint32, error) {
 	draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
 
 	var texture uint32
-	gl.Enable(gl.BLEND)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	gl.GenTextures(1, &texture)
 	gl.ActiveTexture(gl.TEXTURE0)
