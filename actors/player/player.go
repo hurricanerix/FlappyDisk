@@ -53,6 +53,7 @@ func (p *Player) Bind(program uint32) {
 
 func (p *Player) Update(elapsed float64) {
 	p.Sprite.Rot += elapsed
+	p.Sprite.Scale = 0.5
 }
 
 func (p *Player) Draw() {
