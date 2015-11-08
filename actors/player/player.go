@@ -37,7 +37,7 @@ func New(window *glfw.Window) (*Player, error) {
 		Sprite: s,
 	}
 
-	window.SetKeyCallback(flapCallback)
+	//window.SetKeyCallback(flapCallback)
 
 	return &p, nil
 
@@ -59,8 +59,8 @@ func (p *Player) Draw() {
 	p.Sprite.Draw()
 }
 
-func flapCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeySpace && action == glfw.Press {
-		println("FLAP")
-	}
-}
+//func flapCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+//if key == glfw.KeySpace && action == glfw.Press {
+//println("FLAP")
+//}
+//}

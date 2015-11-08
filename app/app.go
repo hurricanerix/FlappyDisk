@@ -27,6 +27,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/FlappyDisk/actors/mountains"
 	"github.com/hurricanerix/FlappyDisk/actors/player"
+	"github.com/hurricanerix/FlappyDisk/input"
 	"github.com/hurricanerix/FlappyDisk/window"
 )
 
@@ -38,9 +39,20 @@ func init() {
 // Config contains settings for running the app
 type Config struct {
 	Window window.Config
+	Input  input.Config
 }
 
-func quitCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	// TODO: Read from config
+	if key == glfw.KeyBackspace && action == glfw.Press {
+		println("Select")
+	}
+	if key == glfw.KeyEnter && action == glfw.Press {
+		println("Start")
+	}
+	if key == glfw.KeySpace && action == glfw.Press {
+		println("Flap")
+	}
 	if key == glfw.KeyEscape && action == glfw.Press {
 		w.SetShouldClose(true)
 	}
@@ -80,7 +92,8 @@ func (a Config) Run() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
-	window.SetKeyCallback(quitCallback)
+	window.SetKeyCallback(keyCallback)
+
 	// Configure the vertex and fragment shaders
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
