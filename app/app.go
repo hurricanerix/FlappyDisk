@@ -16,10 +16,7 @@
 package app
 
 import (
-	"bytes"
 	"fmt"
-	"image"
-	"image/draw"
 	_ "image/png" // Need this for image libs
 	"log"
 	"runtime"
@@ -28,7 +25,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/hurricanerix/FlappyDisk/gen"
+	"github.com/hurricanerix/FlappyDisk/sprite"
 	"github.com/hurricanerix/FlappyDisk/window"
 )
 
@@ -115,8 +112,7 @@ func (a Config) Run() {
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	// Load the texture
-	texture, err := newTexture("assets/floppy.png")
+	player, err := sprite.New("assets/floppy.png")
 	if err != nil {
 		panic(err)
 	}
@@ -165,7 +161,7 @@ func (a Config) Run() {
 		gl.BindVertexArray(vao)
 
 		gl.ActiveTexture(gl.TEXTURE0)
-		gl.BindTexture(gl.TEXTURE_2D, texture)
+		gl.BindTexture(gl.TEXTURE_2D, player.Texture)
 
 		gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 
@@ -230,44 +226,6 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 	}
 
 	return shader, nil
-}
-
-func newTexture(name string) (uint32, error) {
-	imgFile, err := gen.Asset(name)
-	if err != nil {
-		return 0, err
-	}
-	img, _, err := image.Decode(bytes.NewReader(imgFile))
-	if err != nil {
-		return 0, err
-	}
-
-	rgba := image.NewRGBA(img.Bounds())
-	if rgba.Stride != rgba.Rect.Size().X*4 {
-		return 0, fmt.Errorf("unsupported stride")
-	}
-	draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
-
-	var texture uint32
-	gl.GenTextures(1, &texture)
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, texture)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(rgba.Rect.Size().X),
-		int32(rgba.Rect.Size().Y),
-		0,
-		gl.RGBA,
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(rgba.Pix))
-
-	return texture, nil
 }
 
 var vertexShader = `
