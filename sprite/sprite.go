@@ -64,6 +64,36 @@ type Sprite struct {
 	Rot       float32
 	Texture   uint32
 	data      []byte
+	vao       uint32
+}
+
+func (s *Sprite) Bind(program uint32) error {
+	gl.GenVertexArrays(1, &s.vao)
+	gl.BindVertexArray(s.vao)
+
+	var vbo uint32
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, gl.Ptr(vertices), gl.STATIC_DRAW)
+
+	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
+	gl.EnableVertexAttribArray(vertAttrib)
+	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
+
+	texCoordAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vertTexCoord\x00")))
+	gl.EnableVertexAttribArray(texCoordAttrib)
+	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
+
+	return nil
+}
+
+func (s *Sprite) Draw() {
+	gl.BindVertexArray(s.vao)
+
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, s.Texture)
+
+	gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 }
 
 func newTexture(b []byte) (uint32, error) {
@@ -98,4 +128,13 @@ func newTexture(b []byte) (uint32, error) {
 		gl.Ptr(rgba.Pix))
 
 	return texture, nil
+}
+
+var vertices = []float32{
+	0.0, 0.0, 0.5, 1.0, 0.0,
+	0.5, 0.0, 0.5, 0.0, 0.0,
+	0.0, 0.5, 0.5, 1.0, 1.0,
+	0.5, 0.0, 0.5, 0.0, 0.0,
+	0.5, 0.5, 0.5, 0.0, 1.0,
+	0.0, 0.5, 0.5, 1.0, 1.0,
 }
