@@ -96,14 +96,9 @@ func (s *Sprite) Bind(program uint32) error {
 }
 
 func (s *Sprite) Draw() {
-	// Rotate
-	s.model = mgl32.HomogRotate3DZ(float32(s.Rot))
-
-	// Scale
-	s.model = s.model.Mul4(mgl32.Scale3D(float32(s.Scale), float32(s.Scale), 0.0))
-	//s.model = mgl32.Scale3D(float32(s.Scale), float32(s.Scale), 0.0)
-
-	// Move
+	s.model = (mgl32.Scale3D(float32(s.Scale), float32(s.Scale), 0.0)).Mul4(
+		mgl32.Translate3D(s.Pos[0], s.Pos[1], s.Pos[2])).Mul4(
+		mgl32.HomogRotate3DZ(float32(s.Rot)))
 
 	gl.UniformMatrix4fv(s.modelUniform, 1, false, &s.model[0])
 
