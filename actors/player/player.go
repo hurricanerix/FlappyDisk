@@ -58,9 +58,3 @@ func (p *Player) Update(elapsed float64) {
 func (p *Player) Draw() {
 	p.Sprite.Draw()
 }
-
-//func flapCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-//if key == glfw.KeySpace && action == glfw.Press {
-//println("FLAP")
-//}
-//}

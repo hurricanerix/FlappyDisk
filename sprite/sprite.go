@@ -96,7 +96,7 @@ func (s *Sprite) Bind(program uint32) error {
 }
 
 func (s *Sprite) Draw() {
-	s.model = mgl32.HomogRotate3D(float32(s.Rot), mgl32.Vec3{1, 1, 1})
+	s.model = mgl32.HomogRotate3DZ(float32(s.Rot))
 	gl.UniformMatrix4fv(s.modelUniform, 1, false, &s.model[0])
 
 	gl.BindVertexArray(s.vao)
@@ -142,10 +142,10 @@ func newTexture(b []byte) (uint32, error) {
 }
 
 var vertices = []float32{
-	0.0, 0.0, 0.5, 1.0, 0.0,
-	0.5, 0.0, 0.5, 0.0, 0.0,
-	0.0, 0.5, 0.5, 1.0, 1.0,
-	0.5, 0.0, 0.5, 0.0, 0.0,
-	0.5, 0.5, 0.5, 0.0, 1.0,
-	0.0, 0.5, 0.5, 1.0, 1.0,
+	0.5, 0.5, -0.5, 1.0, 0.0,
+	-0.5, 0.5, -0.5, 0.0, 0.0,
+	0.5, -0.5, -0.5, 1.0, 1.0,
+	-0.5, 0.5, -0.5, 0.0, 0.0,
+	-0.5, -0.5, -0.5, 0.0, 1.0,
+	0.5, -0.5, -0.5, 1.0, 1.0,
 }
