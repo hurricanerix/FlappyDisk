@@ -13,6 +13,13 @@ $ go get -u github.com/jteeuwen/go-bindata/...
 $ sudo apt-get install build-essential libegl1-mesa-dev libglfw3-dev libxrandr-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev xorg-deUbuntu Install
 ```
 
+For OSX
+
+```
+# Install Xcode
+$ brew install homebrew/versions/glfw3
+```
+
 To build the executable:
 
 ```
@@ -31,4 +38,3 @@ Credits
 [*.pyxel assets created with Pyxel Edit](http://pyxeledit.com/)
 
 [Original OpenGL code](https://github.com/go-gl/examples/tree/master/glfw31-gl41core-cube)
-
