@@ -11,6 +11,7 @@ Currently I am doing my developemnt from Ubuntu Gnome 15.10. requrements to buil
 ```
 $ go get -u github.com/jteeuwen/go-bindata/...
 $ sudo apt-get install build-essential libegl1-mesa-dev libglfw3-dev libxrandr-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev xorg-deUbuntu Install
+$ go get
 ```
 
 For OSX
@@ -18,6 +19,7 @@ For OSX
 ```
 # Install Xcode
 $ brew install homebrew/versions/glfw3
+$ go get
 ```
 
 To build the executable:
