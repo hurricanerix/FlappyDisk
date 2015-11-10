@@ -5,7 +5,7 @@ A flappy bird clone written in Go for Extra-Life 2016.
 
 If you think this is a cool idea, [DONATE!](http://www.extra-life.org/participant/hurricanerix).  It is #FORTHEKIDS after all.
 
-Extra-Life 2015 has come and gone, but I am not stopping.  I am going to continue fundraising until Dec 31st 2015.  During that time, I will continue working on the game.  I pledge that by Dec 31st, the game will be a fully functional and polished game that anybody would be proud to play (probably at the end, when things like Solitaire come out) at Extra-Life 2016.  
+Extra-Life Game Day 2015 has come and gone, but I am not stopping.  I am going to continue fundraising until Dec 31st 2015.  During that time, I will continue working on the game.  I pledge that by Dec 31st, the game will be a fully functional and polished that anybody would be proud to play at Extra-Life 2016 (probably at the end, when things like Solitaire come out).
 
 [First commit from Extra-Life 2016 event](https://github.com/hurricanerix/FlappyDisk/commit/8b0f5916fee5fc910fab048135529ee5e3573173)
 
