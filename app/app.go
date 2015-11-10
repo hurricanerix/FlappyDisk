@@ -119,7 +119,7 @@ func (a Config) Run() {
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	player, err := player.New(window)
+	player, err := player.New()
 	if err != nil {
 		panic(err)
 	}

@@ -18,7 +18,6 @@ package player
 import (
 	"runtime"
 
-	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/hurricanerix/FlappyDisk/sprite"
 )
 
@@ -27,7 +26,7 @@ func init() {
 	runtime.LockOSThread()
 }
 
-func New(window *glfw.Window) (*Player, error) {
+func New() (*Player, error) {
 	s, err := sprite.New("assets/floppy.png")
 	if err != nil {
 		return nil, err
@@ -37,14 +36,13 @@ func New(window *glfw.Window) (*Player, error) {
 		Sprite: s,
 	}
 
-	//window.SetKeyCallback(flapCallback)
-
 	return &p, nil
 
 }
 
 type Player struct {
-	Sprite *sprite.Sprite
+	Sprite  *sprite.Sprite
+	Falling bool
 }
 
 func (p *Player) Bind(program uint32) {
@@ -52,8 +50,13 @@ func (p *Player) Bind(program uint32) {
 }
 
 func (p *Player) Update(elapsed float64) {
-	p.Sprite.Rot -= elapsed
+	p.Sprite.Rot -= (elapsed * 2)
 	p.Sprite.Scale = 0.5
+	if p.Falling {
+		p.Sprite.Pos[1] += float32(elapsed)
+	} else {
+		p.Sprite.Pos[1] -= float32(elapsed)
+	}
 	p.Sprite.Pos[2] = 10
 }
 
