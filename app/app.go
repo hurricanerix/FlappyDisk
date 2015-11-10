@@ -155,6 +155,11 @@ func (a Config) Run() {
 		player.Update(elapsed)
 		mountains.Update(elapsed)
 
+		if player.Dead {
+			fmt.Println("You died!")
+			window.SetShouldClose(true)
+		}
+
 		// Render
 		gl.UseProgram(program)
 
