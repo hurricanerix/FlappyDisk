@@ -58,6 +58,55 @@ func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
 	}
 }
 
+func getView(scaleX, scaleY, transX, transY, transZ float32) mgl32.Mat4 {
+	v := mgl32.Mat4{
+		scaleX, 0.0, 0.0, transX,
+		0.0, scaleY, 0.0, transY,
+		0.0, 0.0, 1.0, transZ,
+		0.0, 0.0, 0.0, 1.0,
+	}
+	return v
+}
+
+// getProj
+//
+// U{Modern glOrtho2d<http://stackoverflow.com/questions/21323743/
+//   modern-equivalent-of-gluortho2d>}
+//
+//  U{Orthographic Projection<http://en.wikipedia.org/wiki/
+//    Orthographic_projection_(geometry)>}
+//
+//  @param left: position of the left side of the display
+//  @type left: int
+//  @param right: position of the right side of the display
+//  @type right: int
+//  @param bottom: position of the bottom side of the display
+//  @type bottom: int
+//  @param top: position of the top side of the display
+//  @type top: int
+func getProj(left, right, bottom, top float32) mgl32.Mat4 {
+	/*
+	   mat = [
+	       (2.0 * inv_x), 0.0, 0.0, (-(right + left) * inv_x),
+	       0.0, (2.0 * inv_y), 0.0, (-(top + bottom) * inv_y),
+	       0.0, 0.0, (-2.0 * inv_z), (-(zFar + zNear) * inv_z),
+	       0.0, 0.0, 0.0, 1.0]
+	*/
+	zNear := -25.0
+	zFar := 25.0
+	invZ := 1.0 / (zFar - zNear)
+	invY := 1.0 / (top - bottom)
+	invX := 1.0 / (right - left)
+
+	m := mgl32.Mat4{
+		(2.0 * invX), 0.0, 0.0, (-(right + left) * invX),
+		0.0, (2.0 * invY), 0.0, (-(top + bottom) * invY),
+		0.0, 0.0, float32(-2.0 * invZ), float32(-(zFar + zNear) * invZ),
+		0.0, 0.0, 0.0, 1.0,
+	}
+	return m
+}
+
 // Run the application
 func (a Config) Run() {
 	if err := glfw.Init(); err != nil {
@@ -94,6 +143,14 @@ func (a Config) Run() {
 
 	window.SetKeyCallback(keyCallback)
 
+	// Configure global settings
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.CULL_FACE)
+	gl.Enable(gl.BLEND)
+	//gl.DepthFunc(gl.LESS)
+	gl.ClearColor(0.527, 0.805, 0.918, 1.0)
+
 	// Configure the vertex and fragment shaders
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
@@ -102,18 +159,20 @@ func (a Config) Run() {
 
 	gl.UseProgram(program)
 
-	left := -1.0
-	right := 1.0
-	top := 1.0
-	bottom := -1.0
-	near := 0.1
-	far := 100.0
+	//left := 0.0
+	right := a.Window.Width
+	//top := 0.0
+	bottom := a.Window.Height
+	//near := -25.0
+	//far := 25.0
 
-	projection := mgl32.Ortho(float32(left), float32(right), float32(bottom), float32(top), float32(near), float32(far))
+	//projection := mgl32.Ortho(float32(left), float32(right), float32(bottom), float32(top), float32(near), float32(far))
+	projection := getProj(1.0, float32(right), 0.0, float32(bottom))
 	projectionUniform := gl.GetUniformLocation(program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
-	camera := mgl32.LookAtV(mgl32.Vec3{0, 0, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+	//camera := mgl32.LookAtV(mgl32.Vec3{0, 0, 3}, mgl32.Vec3{0, 1, 0}, mgl32.Vec3{0, 1, 0})
+	camera := getView(1.0, float32(right), 0.0, float32(bottom), 1.0)
 	cameraUniform := gl.GetUniformLocation(program, gl.Str("camera\x00"))
 	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
 
@@ -131,15 +190,6 @@ func (a Config) Run() {
 
 	player.Bind(program)
 	mountains.Bind(program)
-
-	// Configure global settings
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	gl.Enable(gl.BLEND)
-	gl.DepthFunc(gl.LESS)
-	gl.Enable(gl.DEPTH_TEST)
-	gl.Enable(gl.CULL_FACE)
-
-	gl.ClearColor(0.527, 0.805, 0.918, 1.0)
 
 	//angle := 0.0
 	previousTime := glfw.GetTime()
