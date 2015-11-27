@@ -79,18 +79,18 @@ func (s *Sprite) Bind(program uint32) error {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
+	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("MCVertex\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
 	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
 
-	texCoordAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vertTexCoord\x00")))
+	texCoordAttrib := uint32(gl.GetAttribLocation(program, gl.Str("TexCoord0\x00")))
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
-	textureUniform := gl.GetUniformLocation(program, gl.Str("tex\x00"))
+	textureUniform := gl.GetUniformLocation(program, gl.Str("ColorMap\x00"))
 	gl.Uniform1i(textureUniform, 0)
 
-	s.modelUniform = gl.GetUniformLocation(program, gl.Str("model\x00"))
+	s.modelUniform = gl.GetUniformLocation(program, gl.Str("ModelMatrix\x00"))
 	gl.UniformMatrix4fv(s.modelUniform, 1, false, &s.model[0])
 	return nil
 }

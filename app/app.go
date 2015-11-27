@@ -110,11 +110,11 @@ func (a Config) Run() {
 	far := 100.0
 
 	projection := mgl32.Ortho(float32(left), float32(right), float32(bottom), float32(top), float32(near), float32(far))
-	projectionUniform := gl.GetUniformLocation(program, gl.Str("projection\x00"))
+	projectionUniform := gl.GetUniformLocation(program, gl.Str("ProjMatrix\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
 	camera := mgl32.LookAtV(mgl32.Vec3{0, 0, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
-	cameraUniform := gl.GetUniformLocation(program, gl.Str("camera\x00"))
+	cameraUniform := gl.GetUniformLocation(program, gl.Str("ViewMatrix\x00"))
 	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
@@ -232,31 +232,31 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 var vertexShader = `
 #version 330
 
-uniform mat4 projection;
-uniform mat4 camera;
-uniform mat4 model;
+uniform mat4 ProjMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ModelMatrix;
 
-in vec3 vert;
-in vec2 vertTexCoord;
+in vec3 MCVertex;
+in vec2 TexCoord0;
 
-out vec2 fragTexCoord;
+out vec2 TexCoord;
 
 void main() {
-    fragTexCoord = vertTexCoord;
-    gl_Position = projection * camera * model * vec4(vert, 1);
+    TexCoord = TexCoord0;
+    gl_Position = ProjMatrix * ViewMatrix * ModelMatrix * vec4(MCVertex, 1);
 }
 ` + "\x00"
 
 var fragmentShader = `
 #version 330
 
-uniform sampler2D tex;
+uniform sampler2D ColorMap;
 
-in vec2 fragTexCoord;
+in vec2 TexCoord;
 
 out vec4 outputColor;
 
 void main() {
-    outputColor = texture(tex, fragTexCoord);
+    outputColor = texture(ColorMap, TexCoord);
 }
 ` + "\x00"
