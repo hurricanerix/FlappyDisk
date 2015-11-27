@@ -46,9 +46,6 @@ func New(assetName string) (*Sprite, error) {
 
 	s := Sprite{
 		AssetName: assetName,
-		Pos:       mgl32.Vec3{0.0, 0.0, 0.0},
-		Scale:     1.0,
-		Rot:       0.0,
 		Texture:   tex,
 		data:      data,
 		model:     mgl32.Ident4(),
@@ -60,9 +57,6 @@ func New(assetName string) (*Sprite, error) {
 // Sprite represents position, rotation and scale for a given asset.
 type Sprite struct {
 	AssetName   string
-	Pos         mgl32.Vec3
-	Scale       float64
-	Rot         float64
 	Texture     uint32
 	data        []byte
 	vao         uint32
@@ -95,11 +89,12 @@ func (s *Sprite) Bind(program uint32) error {
 	return nil
 }
 
-func (s *Sprite) Draw() {
+func (s *Sprite) Draw(pos mgl32.Vec3) {
+	// TODO: also include scale & rot to this.
 	gl.Enable(gl.DEPTH_TEST)
-	s.model = (mgl32.Scale3D(float32(s.Scale), float32(s.Scale), 0.0)).Mul4(
-		mgl32.Translate3D(s.Pos[0], s.Pos[1], s.Pos[2])).Mul4(
-		mgl32.HomogRotate3DZ(float32(s.Rot)))
+	s.model = (mgl32.Scale3D(float32(1.0), float32(1.0), 0.0)).Mul4(
+		mgl32.Translate3D(pos[0], pos[1], pos[2])).Mul4(
+		mgl32.HomogRotate3DZ(float32(0.0)))
 
 	gl.UniformMatrix4fv(s.modelMatrix, 1, false, &s.model[0])
 
@@ -147,10 +142,10 @@ func newTexture(b []byte) (uint32, error) {
 }
 
 var vertices = []float32{
-	0.5, 0.5, -0.5, 1.0, 0.0,
-	-0.5, 0.5, -0.5, 0.0, 0.0,
-	0.5, -0.5, -0.5, 1.0, 1.0,
-	-0.5, 0.5, -0.5, 0.0, 0.0,
-	-0.5, -0.5, -0.5, 0.0, 1.0,
-	0.5, -0.5, -0.5, 1.0, 1.0,
+	0.0, 0.0, 0.0, 0.0, 1.0,
+	1.0, 0.0, 0.0, 1.0, 1.0,
+	1.0, 1.0, 0.0, 1.0, 0.0,
+	0.0, 1.0, 0.0, 0.0, 0.0,
+	0.0, 0.0, 0.0, 0.0, 1.0,
+	1.0, 1.0, 0.0, 1.0, 0.0,
 }

@@ -58,6 +58,24 @@ func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
 	}
 }
 
+func getViewMatrix(x, y float32) mgl32.Mat4 {
+	var scaleX float32 = 1.0
+	var scaleY float32 = 1.0
+	var layer float32 = 1.0
+	// TODO: maybe this shuold use mgl32.LookAtV(...)?
+	return get4x4Transform(scaleX, scaleY, x, y, layer)
+}
+
+func get4x4Transform(scaleX, scaleY, transX, transY, transZ float32) mgl32.Mat4 {
+	transform := mgl32.Mat4{
+		scaleX, 0.0, 0.0, transX,
+		0.0, scaleY, 0.0, transY,
+		0.0, 0.0, 1.0, transZ,
+		0.0, 0.0, 0.0, 1.0,
+	}
+	return transform
+}
+
 // Run the application
 func (a Config) Run() {
 	if err := glfw.Init(); err != nil {
@@ -106,16 +124,16 @@ func (a Config) Run() {
 	right := 1.0
 	top := 1.0
 	bottom := -1.0
-	near := 0.1
+	near := 0.0
 	far := 100.0
 
-	projection := mgl32.Ortho(float32(left), float32(right), float32(bottom), float32(top), float32(near), float32(far))
-	projectionUniform := gl.GetUniformLocation(program, gl.Str("ProjMatrix\x00"))
-	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
+	projMatrix := mgl32.Ortho(float32(left), float32(right), float32(bottom), float32(top), float32(near), float32(far))
+	projUniform := gl.GetUniformLocation(program, gl.Str("ProjMatrix\x00"))
+	gl.UniformMatrix4fv(projUniform, 1, false, &projMatrix[0])
 
-	camera := mgl32.LookAtV(mgl32.Vec3{0, 0, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
-	cameraUniform := gl.GetUniformLocation(program, gl.Str("ViewMatrix\x00"))
-	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
+	viewMatrix := getViewMatrix(0.0, 0.0)
+	viewUniform := gl.GetUniformLocation(program, gl.Str("ViewMatrix\x00"))
+	gl.UniformMatrix4fv(viewUniform, 1, false, &viewMatrix[0])
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
@@ -235,6 +253,7 @@ var vertexShader = `
 uniform mat4 ProjMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ModelMatrix;
+
 
 in vec3 MCVertex;
 in vec2 TexCoord0;

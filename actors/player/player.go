@@ -18,6 +18,7 @@ package player
 import (
 	"runtime"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/FlappyDisk/sprite"
 )
 
@@ -44,6 +45,7 @@ func New() (*Player, error) {
 
 type Player struct {
 	Sprite  *sprite.Sprite
+	Pos     mgl32.Vec3
 	Falling bool
 	Dead    bool
 }
@@ -53,19 +55,19 @@ func (p *Player) Bind(program uint32) {
 }
 
 func (p *Player) Update(elapsed float64) {
-	p.Sprite.Rot -= (elapsed * 2)
-	p.Sprite.Scale = 0.5
+	//p.Sprite.Rot -= (elapsed * 2)
+	//p.Sprite.Scale = 0.5
 	if p.Falling {
-		p.Sprite.Pos[1] -= float32(elapsed) * 3
+		p.Pos[1] -= float32(elapsed) * 3
 	} else {
-		p.Sprite.Pos[1] += float32(elapsed) * 3
+		p.Pos[1] += float32(elapsed) * 3
 	}
-	if p.Sprite.Pos[1] < -3 {
+	if p.Pos[1] < -3 {
 		p.Dead = true
 	}
-	p.Sprite.Pos[2] = 10
+	p.Pos[2] = 10
 }
 
 func (p *Player) Draw() {
-	p.Sprite.Draw()
+	p.Sprite.Draw(p.Pos)
 }

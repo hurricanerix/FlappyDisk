@@ -28,15 +28,9 @@ func init() {
 }
 
 func New() (*Mountains, error) {
-	s := []*sprite.Sprite{}
-
-	for i := 0; i < 2; i++ {
-		si, err := sprite.New("assets/mountains.png")
-		if err != nil {
-			return nil, err
-		}
-		si.Pos[2] = 5
-		s = append(s, si)
+	s, err := sprite.New("assets/mountains.png")
+	if err != nil {
+		return nil, err
 	}
 
 	m := Mountains{
@@ -44,27 +38,23 @@ func New() (*Mountains, error) {
 	}
 
 	return &m, nil
-
 }
 
 type Mountains struct {
-	Sprite []*sprite.Sprite
+	Sprite *sprite.Sprite
+	Pos    mgl32.Vec3
 }
 
 func (m *Mountains) Bind(program uint32) {
-	for i := 0; i < len(m.Sprite); i++ {
-		m.Sprite[i].Bind(program)
-	}
+	m.Sprite.Bind(program)
 }
 
 func (m *Mountains) Update(elapsed float64) {
 	//m.Sprite[0].Rot -= elapsed
-	m.Sprite[0].Pos = mgl32.Vec3{0.0, 0.0, 0.0}
-	m.Sprite[0].Scale = 2.0
+	m.Pos = mgl32.Vec3{0.0, 0.0, 0.0}
+	// m.Scale = 1.0
 }
 
 func (m *Mountains) Draw() {
-	for i := 0; i < len(m.Sprite); i++ {
-		m.Sprite[i].Draw()
-	}
+	m.Sprite.Draw(m.Pos)
 }
