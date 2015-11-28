@@ -35,6 +35,7 @@ func New() (*Mountains, error) {
 
 	m := Mountains{
 		Sprite: s,
+		Pos:    mgl32.Vec3{0.0, 0.0, 10.0},
 	}
 
 	return &m, nil
@@ -56,5 +57,5 @@ func (m *Mountains) Update(elapsed float64) {
 }
 
 func (m *Mountains) Draw() {
-	m.Sprite.Draw(m.Pos)
+	m.Sprite.Draw(0.0, m.Pos, 1.0)
 }

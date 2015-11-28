@@ -39,13 +39,15 @@ func New(assetName string) (*Sprite, error) {
 		return nil, err
 	}
 
-	tex, err := newTexture(data)
+	tex, width, height, err := newTexture(data)
 	if err != nil {
 		return nil, err
 	}
 
 	s := Sprite{
 		AssetName: assetName,
+		Width:     float32(width),
+		Height:    float32(height),
 		Texture:   tex,
 		data:      data,
 		model:     mgl32.Ident4(),
@@ -57,6 +59,8 @@ func New(assetName string) (*Sprite, error) {
 // Sprite represents position, rotation and scale for a given asset.
 type Sprite struct {
 	AssetName   string
+	Width       float32
+	Height      float32
 	Texture     uint32
 	data        []byte
 	vao         uint32
@@ -89,15 +93,15 @@ func (s *Sprite) Bind(program uint32) error {
 	return nil
 }
 
-func (s *Sprite) Draw(pos mgl32.Vec3) {
-	// TODO: also include scale & rot to this.
+func (s *Sprite) Draw(rotation float32, translation mgl32.Vec3, scale float32) {
 	gl.Enable(gl.DEPTH_TEST)
-	s.model = (mgl32.Scale3D(float32(1.0), float32(1.0), 0.0)).Mul4(
-		mgl32.Translate3D(pos[0], pos[1], pos[2])).Mul4(
-		mgl32.HomogRotate3DZ(float32(0.0)))
+
+	s.model = mgl32.Ident4()
+	s.model = s.model.Mul4(mgl32.Scale3D(s.Width, s.Height, 0.0))
+	s.model = s.model.Mul4(mgl32.Translate3D(translation[0], translation[1], translation[2]))
+	s.model = s.model.Mul4(mgl32.HomogRotate3DZ(rotation))
 
 	gl.UniformMatrix4fv(s.modelMatrix, 1, false, &s.model[0])
-
 	gl.BindVertexArray(s.vao)
 
 	gl.ActiveTexture(gl.TEXTURE0)
@@ -106,15 +110,15 @@ func (s *Sprite) Draw(pos mgl32.Vec3) {
 	gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 }
 
-func newTexture(b []byte) (uint32, error) {
+func newTexture(b []byte) (uint32, int, int, error) {
 	img, _, err := image.Decode(bytes.NewReader(b))
 	if err != nil {
-		return 0, err
+		return 0, 0, 0, err
 	}
 
 	rgba := image.NewRGBA(img.Bounds())
 	if rgba.Stride != rgba.Rect.Size().X*4 {
-		return 0, fmt.Errorf("unsupported stride")
+		return 0, 0, 0, fmt.Errorf("unsupported stride")
 	}
 	draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
 
@@ -138,7 +142,7 @@ func newTexture(b []byte) (uint32, error) {
 		gl.UNSIGNED_BYTE,
 		gl.Ptr(rgba.Pix))
 
-	return texture, nil
+	return texture, rgba.Rect.Size().X, rgba.Rect.Size().Y, nil
 }
 
 var vertices = []float32{

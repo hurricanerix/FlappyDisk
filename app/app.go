@@ -120,14 +120,14 @@ func (a Config) Run() {
 
 	gl.UseProgram(program)
 
-	left := -1.0
-	right := 1.0
-	top := 1.0
-	bottom := -1.0
-	near := 0.0
-	far := 100.0
+	var left float32 = 0.0
+	var right float32 = float32(a.Window.Width)
+	var top float32 = float32(a.Window.Height)
+	var bottom float32 = 0.0
+	var near float32 = 0.0
+	var far float32 = 3.0
 
-	projMatrix := mgl32.Ortho(float32(left), float32(right), float32(bottom), float32(top), float32(near), float32(far))
+	projMatrix := mgl32.Ortho(left, right, bottom, top, near, far)
 	projUniform := gl.GetUniformLocation(program, gl.Str("ProjMatrix\x00"))
 	gl.UniformMatrix4fv(projUniform, 1, false, &projMatrix[0])
 

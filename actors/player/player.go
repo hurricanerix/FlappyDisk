@@ -35,17 +35,18 @@ func New() (*Player, error) {
 
 	p := Player{
 		Sprite:  s,
+		Pos:     mgl32.Vec3{0.5, 0.5, 1.0},
 		Falling: true,
 		Dead:    false,
 	}
 
 	return &p, nil
-
 }
 
 type Player struct {
 	Sprite  *sprite.Sprite
 	Pos     mgl32.Vec3
+	Rot     float32
 	Falling bool
 	Dead    bool
 }
@@ -55,13 +56,14 @@ func (p *Player) Bind(program uint32) {
 }
 
 func (p *Player) Update(elapsed float64) {
-	//p.Sprite.Rot -= (elapsed * 2)
+	p.Rot -= float32((elapsed * 2))
 	//p.Sprite.Scale = 0.5
-	if p.Falling {
-		p.Pos[1] -= float32(elapsed) * 3
-	} else {
-		p.Pos[1] += float32(elapsed) * 3
-	}
+	//
+	// if p.Falling {
+	// 	p.Pos[1] -= float32(elapsed) * 3
+	// } else {
+	// 	p.Pos[1] += float32(elapsed) * 3
+	// }
 	if p.Pos[1] < -3 {
 		p.Dead = true
 	}
@@ -69,5 +71,5 @@ func (p *Player) Update(elapsed float64) {
 }
 
 func (p *Player) Draw() {
-	p.Sprite.Draw(p.Pos)
+	p.Sprite.Draw(p.Rot, p.Pos, 0.5)
 }
