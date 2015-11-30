@@ -27,6 +27,7 @@ func init() {
 	runtime.LockOSThread()
 }
 
+// New TODO: write comment
 func New() (*Player, error) {
 	s, err := sprite.New("assets/floppy.png")
 	if err != nil {
@@ -35,7 +36,7 @@ func New() (*Player, error) {
 
 	p := Player{
 		Sprite:  s,
-		Pos:     mgl32.Vec3{0.5, 0.5, 1.0},
+		Pos:     mgl32.Vec3{0.0, 0.0, 1.0},
 		Falling: true,
 		Dead:    false,
 	}
@@ -43,6 +44,7 @@ func New() (*Player, error) {
 	return &p, nil
 }
 
+// Player TODO: write comment
 type Player struct {
 	Sprite  *sprite.Sprite
 	Pos     mgl32.Vec3
@@ -51,10 +53,12 @@ type Player struct {
 	Dead    bool
 }
 
+// Bind TODO: write comment
 func (p *Player) Bind(program uint32) {
 	p.Sprite.Bind(program)
 }
 
+// Update TODO: write comment
 func (p *Player) Update(elapsed float64) {
 	p.Rot -= float32((elapsed * 2))
 	//p.Sprite.Scale = 0.5
@@ -67,9 +71,9 @@ func (p *Player) Update(elapsed float64) {
 	if p.Pos[1] < -3 {
 		p.Dead = true
 	}
-	p.Pos[2] = 10
 }
 
+// Draw TODO: write comment
 func (p *Player) Draw() {
-	p.Sprite.Draw(p.Rot, p.Pos, 0.5)
+	p.Sprite.Draw(p.Rot, p.Pos, 1.0)
 }

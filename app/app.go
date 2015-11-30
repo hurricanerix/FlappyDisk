@@ -58,24 +58,6 @@ func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
 	}
 }
 
-func getViewMatrix(x, y float32) mgl32.Mat4 {
-	var scaleX float32 = 1.0
-	var scaleY float32 = 1.0
-	var layer float32 = 1.0
-	// TODO: maybe this shuold use mgl32.LookAtV(...)?
-	return get4x4Transform(scaleX, scaleY, x, y, layer)
-}
-
-func get4x4Transform(scaleX, scaleY, transX, transY, transZ float32) mgl32.Mat4 {
-	transform := mgl32.Mat4{
-		scaleX, 0.0, 0.0, transX,
-		0.0, scaleY, 0.0, transY,
-		0.0, 0.0, 1.0, transZ,
-		0.0, 0.0, 0.0, 1.0,
-	}
-	return transform
-}
-
 // Run the application
 func (a Config) Run() {
 	if err := glfw.Init(); err != nil {
@@ -89,7 +71,7 @@ func (a Config) Run() {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
-	var monitor *glfw.Monitor = nil
+	var monitor *glfw.Monitor
 	if a.Window.FullScreen {
 		// TODO: Maybe choose monitor based on config?
 		// http://www.glfw.org/docs/latest/monitor.html#monitor_monitors
@@ -120,18 +102,20 @@ func (a Config) Run() {
 
 	gl.UseProgram(program)
 
-	var left float32 = 0.0
-	var right float32 = float32(a.Window.Width)
-	var top float32 = float32(a.Window.Height)
-	var bottom float32 = 0.0
-	var near float32 = 0.0
-	var far float32 = 3.0
+	var left, right, top, bottom, near, far float32
+	right = float32(a.Window.Width)
+	top = float32(a.Window.Height)
+	far = 10.0
 
 	projMatrix := mgl32.Ortho(left, right, bottom, top, near, far)
 	projUniform := gl.GetUniformLocation(program, gl.Str("ProjMatrix\x00"))
 	gl.UniformMatrix4fv(projUniform, 1, false, &projMatrix[0])
 
-	viewMatrix := getViewMatrix(0.0, 0.0)
+	var eye, center, up mgl32.Vec3
+	center = mgl32.Vec3{0.0, 0.0, -1.0}
+	up = mgl32.Vec3{0.0, 1.0, 0.0}
+	viewMatrix := mgl32.LookAtV(eye, center, up)
+
 	viewUniform := gl.GetUniformLocation(program, gl.Str("ViewMatrix\x00"))
 	gl.UniformMatrix4fv(viewUniform, 1, false, &viewMatrix[0])
 

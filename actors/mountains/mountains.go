@@ -27,6 +27,7 @@ func init() {
 	runtime.LockOSThread()
 }
 
+// New TODO: write comment
 func New() (*Mountains, error) {
 	s, err := sprite.New("assets/mountains.png")
 	if err != nil {
@@ -35,27 +36,28 @@ func New() (*Mountains, error) {
 
 	m := Mountains{
 		Sprite: s,
-		Pos:    mgl32.Vec3{0.0, 0.0, 10.0},
+		Pos:    mgl32.Vec3{0.0, 0.0, 2.0},
 	}
 
 	return &m, nil
 }
 
+// Mountains TODO: write comment
 type Mountains struct {
 	Sprite *sprite.Sprite
 	Pos    mgl32.Vec3
 }
 
+// Bind TODO: write comment
 func (m *Mountains) Bind(program uint32) {
 	m.Sprite.Bind(program)
 }
 
+// Update TODO: write comment
 func (m *Mountains) Update(elapsed float64) {
-	//m.Sprite[0].Rot -= elapsed
-	m.Pos = mgl32.Vec3{0.0, 0.0, 0.0}
-	// m.Scale = 1.0
 }
 
+// Draw TODO: write comment
 func (m *Mountains) Draw() {
 	m.Sprite.Draw(0.0, m.Pos, 1.0)
 }
