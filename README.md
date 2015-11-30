@@ -18,19 +18,21 @@ Additionally everybody who donates will get their name into the credits screen o
 Building
 --------
 
-Currently I am doing my developemnt from Ubuntu Gnome 15.10. requrements to build are as follows:
-
-```
-$ go get -u github.com/jteeuwen/go-bindata/...
-$ sudo apt-get install build-essential libegl1-mesa-dev libglfw3-dev libxrandr-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev xorg-deUbuntu Install
-$ go get
-```
-
-For OSX
+Developemnt is being done on OS X El Capitan.
 
 ```
 # Install Xcode
 $ brew install homebrew/versions/glfw3
+$ go get -u github.com/jteeuwen/go-bindata/...
+$ make gen
+$ go get
+```
+
+For Debian based Linux, this might work:
+
+```
+$ go get -u github.com/jteeuwen/go-bindata/...
+$ sudo apt-get install build-essential libegl1-mesa-dev libglfw3-dev libxrandr-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev xorg-deUbuntu Install
 $ go get
 ```
 
