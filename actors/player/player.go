@@ -36,7 +36,7 @@ func New() (*Player, error) {
 
 	p := Player{
 		Sprite:  s,
-		Pos:     mgl32.Vec3{0.0, 0.0, 1.0},
+		Pos:     mgl32.Vec3{49.0, 40.0, 2.0},
 		Falling: true,
 		Dead:    false,
 	}
@@ -75,5 +75,5 @@ func (p *Player) Update(elapsed float64) {
 
 // Draw TODO: write comment
 func (p *Player) Draw() {
-	p.Sprite.Draw(p.Rot, p.Pos, 1.0)
+	p.Sprite.Draw(p.Rot, p.Pos, 2.0)
 }

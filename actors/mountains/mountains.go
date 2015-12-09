@@ -36,7 +36,7 @@ func New() (*Mountains, error) {
 
 	m := Mountains{
 		Sprite: s,
-		Pos:    mgl32.Vec3{0.0, 0.0, 2.0},
+		Pos:    mgl32.Vec3{0.0, 0.0, 3.0},
 	}
 
 	return &m, nil

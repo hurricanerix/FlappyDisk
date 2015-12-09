@@ -96,18 +96,17 @@ func (s *Sprite) Bind(program uint32) error {
 
 // Draw TODO: write comment
 func (s *Sprite) Draw(rotation float32, translation mgl32.Vec3, scale float32) {
-	gl.Enable(gl.DEPTH_TEST)
+	//gl.Enable(gl.DEPTH_TEST)
 
 	s.model = mgl32.Ident4()
-	//s.model = s.model.Mul4(mgl32.Translate3D(-s.Width/2, -s.Height/2, 0.0))
-	s.model = s.model.Mul4(mgl32.Scale3D(s.Width, s.Height, 0.0))
-	//s.model = s.model.Mul4(mgl32.HomogRotate3D(rotation, mgl32.Vec3{1.0, 0.0, 0.0}))
-	//s.model = s.model.Mul4(mgl32.HomogRotate3DZ(rotation))
-	//s.model = s.model.Mul4(mgl32.Translate3D(s.Width/2, s.Height/2, 0.0))
+	s.model = s.model.Mul4(mgl32.HomogRotate3DZ(rotation))
 	s.model = s.model.Mul4(mgl32.Translate3D(translation.X(), translation.Y(), translation.Z()))
+	s.model = s.model.Mul4(mgl32.Scale3D(s.Width*scale, s.Height*scale, 1.0))
 
-	//fmt.Printf("%s: %v\n", s.AssetName, translation)
-	//fmt.Printf("%v", s.model)
+	// fmt.Println(s.model)
+	// fmt.Println(s.model)
+	// fmt.Printf("%s: %v\n", s.AssetName, translation)
+	// fmt.Printf("%v", s.model)
 
 	gl.UniformMatrix4fv(s.modelMatrix, 1, false, &s.model[0])
 	gl.BindVertexArray(s.vao)
@@ -154,10 +153,10 @@ func newTexture(b []byte) (uint32, int, int, error) {
 }
 
 var vertices = []float32{
-	0.0, 0.0, 0.0, 0.0, 1.0,
-	1.0, 0.0, 0.0, 1.0, 1.0,
-	1.0, 1.0, 0.0, 1.0, 0.0,
-	0.0, 1.0, 0.0, 0.0, 0.0,
-	0.0, 0.0, 0.0, 0.0, 1.0,
-	1.0, 1.0, 0.0, 1.0, 0.0,
+	-1.0, -1.0, -1.0, 0.0, 1.0,
+	1.0, -1.0, -1.0, 1.0, 1.0,
+	1.0, 1.0, -1.0, 1.0, 0.0,
+	-1.0, 1.0, -1.0, 0.0, 0.0,
+	-1.0, -1.0, -1.0, 0.0, 1.0,
+	1.0, 1.0, -1.0, 1.0, 0.0,
 }

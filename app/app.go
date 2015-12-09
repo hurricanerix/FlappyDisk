@@ -105,6 +105,7 @@ func (a Config) Run() {
 	var left, right, top, bottom, near, far float32
 	right = float32(a.Window.Width)
 	top = float32(a.Window.Height)
+	near = 0.1
 	far = 10.0
 
 	projMatrix := mgl32.Ortho(left, right, bottom, top, near, far)
@@ -112,6 +113,7 @@ func (a Config) Run() {
 	gl.UniformMatrix4fv(projUniform, 1, false, &projMatrix[0])
 
 	var eye, center, up mgl32.Vec3
+	eye = mgl32.Vec3{0.0, 0.0, 7.0}
 	center = mgl32.Vec3{0.0, 0.0, -1.0}
 	up = mgl32.Vec3{0.0, 1.0, 0.0}
 	viewMatrix := mgl32.LookAtV(eye, center, up)
@@ -137,13 +139,14 @@ func (a Config) Run() {
 	// Configure global settings
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.Enable(gl.BLEND)
-	gl.DepthFunc(gl.LESS)
-	gl.Enable(gl.DEPTH_TEST)
+	// TODO: Figure out why "layering" using z-buffer does not work.
+	//gl.DepthFunc(gl.LESS)
+	//gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.NEVER)
 	gl.Enable(gl.CULL_FACE)
 
 	gl.ClearColor(0.527, 0.805, 0.918, 1.0)
 
-	//angle := 0.0
 	previousTime := glfw.GetTime()
 
 	for !window.ShouldClose() {
@@ -165,8 +168,9 @@ func (a Config) Run() {
 		// Render
 		gl.UseProgram(program)
 
-		player.Draw()
+		// Drawing order matters here, draw from back to front.
 		mountains.Draw()
+		player.Draw()
 
 		// Maintenance
 		window.SwapBuffers()
@@ -238,15 +242,17 @@ uniform mat4 ProjMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ModelMatrix;
 
-
 in vec3 MCVertex;
 in vec2 TexCoord0;
 
 out vec2 TexCoord;
+out float Layer;
 
 void main() {
-    TexCoord = TexCoord0;
-    gl_Position = ProjMatrix * ViewMatrix * ModelMatrix * vec4(MCVertex, 1);
+  TexCoord = TexCoord0;
+  gl_Position = ProjMatrix * ViewMatrix * ModelMatrix * vec4(MCVertex, 1);
+	//gl_Position.z = MCVertex.z;
+	Layer = gl_Position.z;
 }
 ` + "\x00"
 
@@ -256,10 +262,11 @@ var fragmentShader = `
 uniform sampler2D ColorMap;
 
 in vec2 TexCoord;
+in float Layer;
 
 out vec4 outputColor;
 
 void main() {
-    outputColor = texture(ColorMap, TexCoord);
+	outputColor = texture(ColorMap, TexCoord);
 }
 ` + "\x00"
