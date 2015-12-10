@@ -30,18 +30,29 @@ import (
 var GitURL = "https://github.com/hurricanerix/FlappyDisk"
 var BuildURL = fmt.Sprintf("%s/commit/%s", GitURL, gen.BuildHash)
 var BuildDate = gen.BuildDate
-var resetConf bool
+
+var (
+	resetConf bool
+	version   bool
+)
 
 func init() {
-	flag.BoolVar(&resetConf, "reset-conf", false, "reset config to default")
+	flag.BoolVar(&resetConf, "reset-conf", false, "reset config to default.")
+	flag.BoolVar(&version, "version", false, "print version and build info.")
 }
 
 func main() {
 	flag.Parse()
 
-	fmt.Println(GitURL)
-	fmt.Println(BuildURL)
-	fmt.Println(BuildDate)
+	if version {
+		fmt.Printf("FlappyDisk Copyright 2015 Richard Hawkins\n")
+		fmt.Printf("Licensed under the Apache License, Version 2.0\n")
+		fmt.Printf("Project code can be found at: %s\n", GitURL)
+		fmt.Printf("Build Info:\n")
+		fmt.Printf("  Built on %s\n", BuildDate)
+		fmt.Printf("  Built from %s\n", BuildURL)
+		os.Exit(0)
+	}
 
 	configPath, configName := getConfigPathName()
 
