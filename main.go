@@ -25,6 +25,11 @@ import (
 	"gopkg.in/gcfg.v1"
 )
 
+//go:generate ./gen_build_info.sh
+
+var GitURL = "https://github.com/hurricanerix/FlappyDisk"
+var BuildURL = fmt.Sprintf("%s/commit/%s", GitURL, gen.BuildHash)
+var BuildDate = gen.BuildDate
 var resetConf bool
 
 func init() {
@@ -33,6 +38,10 @@ func init() {
 
 func main() {
 	flag.Parse()
+
+	fmt.Println(GitURL)
+	fmt.Println(BuildURL)
+	fmt.Println(BuildDate)
 
 	configPath, configName := getConfigPathName()
 

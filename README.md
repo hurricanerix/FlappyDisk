@@ -15,37 +15,17 @@ Additionally everybody who donates will get their name into the credits screen o
 
 ![](https://github.com/hurricanerix/FlappyDisk/blob/master/screenshot.png)
 
-Building
---------
+How to run
+----------
 
-Developemnt is being done on OS X El Capitan.
+Development is being done on OS X El Capitan.
 
 ```
 # Install Xcode
 $ brew install homebrew/versions/glfw3
-$ go get -u github.com/jteeuwen/go-bindata/...
-$ make gen
+$ go generate
 $ go get
-```
-
-For Debian based Linux, this might work:
-
-```
-$ go get -u github.com/jteeuwen/go-bindata/...
-$ sudo apt-get install build-essential libegl1-mesa-dev libglfw3-dev libxrandr-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev xorg-deUbuntu Install
-$ go get
-```
-
-To build the executable:
-
-```
-$ make
-```
-
-To make and run the executable:
-
-```
-$ make run
+$ go run main.go
 ```
 
 Credits
