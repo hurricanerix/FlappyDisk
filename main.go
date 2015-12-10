@@ -28,8 +28,6 @@ import (
 //go:generate ./gen_build_info.sh
 
 var GitURL = "https://github.com/hurricanerix/FlappyDisk"
-var BuildURL = fmt.Sprintf("%s/commit/%s", GitURL, gen.BuildHash)
-var BuildDate = gen.BuildDate
 
 var (
 	resetConf bool
@@ -49,8 +47,9 @@ func main() {
 		fmt.Printf("Licensed under the Apache License, Version 2.0\n")
 		fmt.Printf("Project code can be found at: %s\n", GitURL)
 		fmt.Printf("Build Info:\n")
-		fmt.Printf("  Built on %s\n", BuildDate)
-		fmt.Printf("  Built from %s\n", BuildURL)
+		fmt.Printf("  %s\n", gen.Version)
+		fmt.Printf("  built on %s\n", gen.BuildDate)
+		fmt.Printf("  built from %s/commit/%s\n", GitURL, gen.BuildHash)
 		os.Exit(0)
 	}
 

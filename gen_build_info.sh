@@ -2,11 +2,22 @@
 
 DATE=`date`
 BUILD_HASH=`git log -n 1 | grep commit | cut -d " " -f 2`
+VERSION=`git describe --abbrev=0`
+
+git --no-pager diff --exit-code "$VERSION" master > /dev/null 2>&1
+PRE_RELEASE=$?
+
+# TODO: Hash should not be added when building from a tagged version
+#       but it looks like it currently does.  This can be fixed later.
+if [ $PRE_RELEASE ]; then
+  VERSION="$VERSION.$BUILD_HASH"
+fi
 
 CODE="// gen is a generated package, DO NOT EDIT!\n
 \n
 package gen\n
 \n
+var Version string = \"$VERSION\"\n
 var BuildDate string = \"$DATE\"\n
 var BuildHash string = \"$BUILD_HASH\"\n
 "
