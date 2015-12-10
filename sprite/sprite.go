@@ -99,8 +99,9 @@ func (s *Sprite) Draw(rotation float32, translation mgl32.Vec3, scale float32) {
 	//gl.Enable(gl.DEPTH_TEST)
 
 	s.model = mgl32.Ident4()
-	s.model = s.model.Mul4(mgl32.HomogRotate3DZ(rotation))
 	s.model = s.model.Mul4(mgl32.Translate3D(translation.X(), translation.Y(), translation.Z()))
+	s.model = s.model.Mul4(mgl32.HomogRotate3DZ(rotation))
+
 	s.model = s.model.Mul4(mgl32.Scale3D(s.Width*scale, s.Height*scale, 1.0))
 
 	// fmt.Println(s.model)

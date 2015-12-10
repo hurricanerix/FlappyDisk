@@ -36,7 +36,7 @@ func New() (*Player, error) {
 
 	p := Player{
 		Sprite:  s,
-		Pos:     mgl32.Vec3{49.0, 40.0, 2.0},
+		Pos:     mgl32.Vec3{320.0, 240.0, 2.0},
 		Falling: true,
 		Dead:    false,
 	}
