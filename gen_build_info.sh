@@ -22,8 +22,13 @@ var BuildDate string = \"$DATE\"\n
 var BuildHash string = \"$BUILD_HASH\"\n
 "
 
-# go-bindata is required to embed assets into binary
-go get -u github.com/jteeuwen/go-bindata/...
+TMP=`go-bindata -version`
+if [ $? -ne 0 ]
+then
+  # go-bindata is required to embed assets into binary
+  echo "Downloading go-bindata"
+  go get -u github.com/jteeuwen/go-bindata/...
+fi
 
 # generate all the files we need
 mkdir -p gen
