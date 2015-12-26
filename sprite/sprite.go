@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // Package sprite provides functions for managing sprites.
+// NOTE:
 
 package sprite
 
@@ -45,27 +46,40 @@ func New(assetName string) (*Sprite, error) {
 	}
 
 	s := Sprite{
-		AssetName: assetName,
-		Width:     float32(width),
-		Height:    float32(height),
-		Texture:   tex,
-		data:      data,
-		model:     mgl32.Ident4(),
+		AssetName:    assetName,
+		CurrentFrame: 0,
+		FrameCount:   int(width / 32.0),
+		Width:        float32(width),
+		Height:       float32(height),
+		Texture:      tex,
+		data:         data,
+		model:        mgl32.Ident4(),
 	}
 
 	return &s, nil
 }
 
+// Name
+// SheetWidth
+// FrameHeight
+// FrameWidth
+// FrameCount
+// data
+
 // Sprite represents position, rotation and scale for a given asset.
 type Sprite struct {
-	AssetName   string
-	Width       float32
-	Height      float32
-	Texture     uint32
-	data        []byte
-	vao         uint32
-	model       mgl32.Mat4
-	modelMatrix int32
+	AssetName    string // Name
+	CurrentFrame int
+	FrameCount   int
+	Width        float32
+	Height       float32
+	Texture      uint32
+	data         []byte
+	vao          uint32
+	frame        mgl32.Mat3
+	frameMatrix  int32
+	model        mgl32.Mat4
+	modelMatrix  int32
 }
 
 // Bind TODO: write comment
@@ -89,6 +103,9 @@ func (s *Sprite) Bind(program uint32) error {
 	colorMap := gl.GetUniformLocation(program, gl.Str("ColorMap\x00"))
 	gl.Uniform1i(colorMap, 0)
 
+	s.frameMatrix = gl.GetUniformLocation(program, gl.Str("FrameMatrix\x00"))
+	gl.UniformMatrix4fv(s.frameMatrix, 1, false, &s.frame[0])
+
 	s.modelMatrix = gl.GetUniformLocation(program, gl.Str("ModelMatrix\x00"))
 	gl.UniformMatrix4fv(s.modelMatrix, 1, false, &s.model[0])
 	return nil
@@ -98,17 +115,42 @@ func (s *Sprite) Bind(program uint32) error {
 func (s *Sprite) Draw(rotation float32, translation mgl32.Vec3, scale float32) {
 	//gl.Enable(gl.DEPTH_TEST)
 
+	// Calculate Frame
+	println(s.CurrentFrame)
+	texScale := 1.0 / float32(s.FrameCount)
+	//texTrans := float32(s.CurrentFrame) * texScale
+	texTrans := texScale //float32(s.CurrentFrame) * texScale
+	println(texTrans)
+
+	// scale_x = 1.0/self.data['frame']['count']['x']
+	// scale_y = 1.0/self.data['frame']['count']['y']
+	// trans_x = frame_x * scale_x
+	// trans_y = frame_y * scale_y
+
+	// def get_3x3_transform(scale_x=1.0, scale_y=1.0, trans_x=1.0, trans_y=1.0):
+	//     """Returns a 3x3 transform.
+	//
+	//     @return: transformation matrix
+	//     @rtype: list
+	//     """
+	//     transform = [scale_x, 0.0, trans_x,
+	//                  0.0, scale_y, trans_y,
+	//                  0.0, 0.0, 1.0]
+	//     return transform
+
+	s.frame = mgl32.Mat3{
+		float32(texScale), 0.0, float32(texTrans),
+		0.0, 1.0, 1.0,
+		0.0, 0.0, 1.0,
+	}
+
+	// Calculate Model
 	s.model = mgl32.Ident4()
 	s.model = s.model.Mul4(mgl32.Translate3D(translation.X(), translation.Y(), translation.Z()))
 	s.model = s.model.Mul4(mgl32.HomogRotate3DZ(rotation))
+	s.model = s.model.Mul4(mgl32.Scale3D(32.0*scale, 32.0*scale, 1.0))
 
-	s.model = s.model.Mul4(mgl32.Scale3D(s.Width*scale, s.Height*scale, 1.0))
-
-	// fmt.Println(s.model)
-	// fmt.Println(s.model)
-	// fmt.Printf("%s: %v\n", s.AssetName, translation)
-	// fmt.Printf("%v", s.model)
-
+	gl.UniformMatrix3fv(s.frameMatrix, 1, false, &s.frame[0])
 	gl.UniformMatrix4fv(s.modelMatrix, 1, false, &s.model[0])
 	gl.BindVertexArray(s.vao)
 

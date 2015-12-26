@@ -241,6 +241,7 @@ var vertexShader = `
 uniform mat4 ProjMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ModelMatrix;
+uniform mat3 FrameMatrix;
 
 in vec3 MCVertex;
 in vec2 TexCoord0;
@@ -249,9 +250,8 @@ out vec2 TexCoord;
 out float Layer;
 
 void main() {
-  TexCoord = TexCoord0;
+	TexCoord = vec3(FrameMatrix * vec3(TexCoord0, 0.0)).st;
   gl_Position = ProjMatrix * ViewMatrix * ModelMatrix * vec4(MCVertex, 1);
-	//gl_Position.z = MCVertex.z;
 	Layer = gl_Position.z;
 }
 ` + "\x00"

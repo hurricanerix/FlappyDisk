@@ -36,7 +36,7 @@ func New() (*Player, error) {
 
 	p := Player{
 		Sprite:  s,
-		Pos:     mgl32.Vec3{320.0, 240.0, 2.0},
+		Pos:     mgl32.Vec3{320.0, 240.0, 1.0},
 		Falling: true,
 		Dead:    false,
 	}
@@ -62,18 +62,18 @@ func (p *Player) Bind(program uint32) {
 func (p *Player) Update(elapsed float64) {
 	p.Rot -= float32((elapsed * 2))
 	//p.Sprite.Scale = 0.5
-	//
-	// if p.Falling {
-	// 	p.Pos[1] -= float32(elapsed) * 3
-	// } else {
-	// 	p.Pos[1] += float32(elapsed) * 3
-	// }
-	if p.Pos[1] < -3 {
-		p.Dead = true
-	}
+
+	//if p.Falling {
+	//	p.Pos[1] -= float32(elapsed) * 300
+	//} else {
+	//	p.Pos[1] += float32(elapsed) * 300
+	//}
+	//if p.Pos[1] < -3 {
+	//	p.Dead = true
+	//}
 }
 
 // Draw TODO: write comment
 func (p *Player) Draw() {
-	p.Sprite.Draw(p.Rot, p.Pos, 2.0)
+	p.Sprite.Draw(p.Rot, p.Pos, 1.0)
 }
