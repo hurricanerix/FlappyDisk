@@ -20,7 +20,6 @@ import (
 	_ "image/png" // Need this for image libs
 	"log"
 	"runtime"
-	"strings"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
@@ -28,6 +27,8 @@ import (
 	"github.com/hurricanerix/FlappyDisk/actors/mountains"
 	"github.com/hurricanerix/FlappyDisk/actors/player"
 	"github.com/hurricanerix/FlappyDisk/input"
+	"github.com/hurricanerix/FlappyDisk/shader"
+	"github.com/hurricanerix/FlappyDisk/sprite"
 	"github.com/hurricanerix/FlappyDisk/window"
 )
 
@@ -95,7 +96,7 @@ func (a Config) Run() {
 	window.SetKeyCallback(keyCallback)
 
 	// Configure the vertex and fragment shaders
-	program, err := newProgram(vertexShader, fragmentShader)
+	program, err := shader.NewProgram(sprite.VertexShader, sprite.FragmentShader)
 	if err != nil {
 		panic(err)
 	}
@@ -177,96 +178,3 @@ func (a Config) Run() {
 		glfw.PollEvents()
 	}
 }
-
-func newProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
-	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
-	if err != nil {
-		return 0, err
-	}
-
-	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
-	if err != nil {
-		return 0, err
-	}
-
-	program := gl.CreateProgram()
-
-	gl.AttachShader(program, vertexShader)
-	gl.AttachShader(program, fragmentShader)
-	gl.LinkProgram(program)
-
-	var status int32
-	gl.GetProgramiv(program, gl.LINK_STATUS, &status)
-	if status == gl.FALSE {
-		var logLength int32
-		gl.GetProgramiv(program, gl.INFO_LOG_LENGTH, &logLength)
-
-		log := strings.Repeat("\x00", int(logLength+1))
-		gl.GetProgramInfoLog(program, logLength, nil, gl.Str(log))
-
-		return 0, fmt.Errorf("failed to link program: %v", log)
-	}
-
-	gl.DeleteShader(vertexShader)
-	gl.DeleteShader(fragmentShader)
-
-	return program, nil
-}
-
-func compileShader(source string, shaderType uint32) (uint32, error) {
-	shader := gl.CreateShader(shaderType)
-
-	csource := gl.Str(source)
-	gl.ShaderSource(shader, 1, &csource, nil)
-	gl.CompileShader(shader)
-
-	var status int32
-	gl.GetShaderiv(shader, gl.COMPILE_STATUS, &status)
-	if status == gl.FALSE {
-		var logLength int32
-		gl.GetShaderiv(shader, gl.INFO_LOG_LENGTH, &logLength)
-
-		log := strings.Repeat("\x00", int(logLength+1))
-		gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
-
-		return 0, fmt.Errorf("failed to compile %v: %v", source, log)
-	}
-
-	return shader, nil
-}
-
-var vertexShader = `
-#version 330
-
-uniform mat4 ProjMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ModelMatrix;
-uniform mat3 FrameMatrix;
-
-in vec3 MCVertex;
-in vec2 TexCoord0;
-
-out vec2 TexCoord;
-out float Layer;
-
-void main() {
-	TexCoord = vec3(FrameMatrix * vec3(TexCoord0, 0.0)).st;
-  gl_Position = ProjMatrix * ViewMatrix * ModelMatrix * vec4(MCVertex, 1);
-	Layer = gl_Position.z;
-}
-` + "\x00"
-
-var fragmentShader = `
-#version 330
-
-uniform sampler2D ColorMap;
-
-in vec2 TexCoord;
-in float Layer;
-
-out vec4 outputColor;
-
-void main() {
-	outputColor = texture(ColorMap, TexCoord);
-}
-` + "\x00"

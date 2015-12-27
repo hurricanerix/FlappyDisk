@@ -203,3 +203,39 @@ var vertices = []float32{
 	-1.0, -1.0, -1.0, 0.0, 1.0,
 	1.0, 1.0, -1.0, 1.0, 0.0,
 }
+
+var VertexShader = `
+#version 330
+
+uniform mat4 ProjMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ModelMatrix;
+uniform mat3 FrameMatrix;
+
+in vec3 MCVertex;
+in vec2 TexCoord0;
+
+out vec2 TexCoord;
+out float Layer;
+
+void main() {
+	TexCoord = vec3(FrameMatrix * vec3(TexCoord0, 0.0)).st;
+  gl_Position = ProjMatrix * ViewMatrix * ModelMatrix * vec4(MCVertex, 1);
+	Layer = gl_Position.z;
+}
+` + "\x00"
+
+var FragmentShader = `
+#version 330
+
+uniform sampler2D ColorMap;
+
+in vec2 TexCoord;
+in float Layer;
+
+out vec4 outputColor;
+
+void main() {
+	outputColor = texture(ColorMap, TexCoord);
+}
+` + "\x00"
