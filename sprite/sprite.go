@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
+	_ "image/png" // register PNG decode
 	"runtime"
 
 	"github.com/go-gl/gl/v4.1-core/gl"

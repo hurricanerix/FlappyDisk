@@ -27,20 +27,21 @@ func init() {
 	runtime.LockOSThread()
 }
 
-func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
-	vertexShader, err := CompileShader(vertexShaderSource, gl.VERTEX_SHADER)
+// New GLSL program.
+func New(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
+	vertShader, err := CompileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("can not create vert shader: %s", err)
 	}
 
-	fragmentShader, err := CompileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	fragShader, err := CompileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("can not create frag shader: %s", err)
 	}
 
 	program := gl.CreateProgram()
-	gl.AttachShader(program, vertexShader)
-	gl.AttachShader(program, fragmentShader)
+	gl.AttachShader(program, vertShader)
+	gl.AttachShader(program, fragShader)
 	gl.LinkProgram(program)
 
 	var status int32
@@ -55,8 +56,8 @@ func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error)
 		return 0, fmt.Errorf("failed to link program: %v", log)
 	}
 
-	gl.DeleteShader(vertexShader)
-	gl.DeleteShader(fragmentShader)
+	gl.DeleteShader(vertShader)
+	gl.DeleteShader(fragShader)
 
 	return program, nil
 }

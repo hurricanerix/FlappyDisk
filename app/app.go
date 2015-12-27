@@ -11,36 +11,123 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// Package app provides the starting point for the app.
+// Package app manages the main game loop.
 
 package app
 
 import (
 	"fmt"
-	_ "image/png" // Need this for image libs
-	"log"
+	"os"
+	"os/user"
 	"runtime"
+	"strings"
+
+	"gopkg.in/gcfg.v1"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/FlappyDisk/actors/mountains"
 	"github.com/hurricanerix/FlappyDisk/actors/player"
+	"github.com/hurricanerix/FlappyDisk/gen"
 	"github.com/hurricanerix/FlappyDisk/input"
 	"github.com/hurricanerix/FlappyDisk/shader"
 	"github.com/hurricanerix/FlappyDisk/sprite"
 	"github.com/hurricanerix/FlappyDisk/window"
 )
 
+// Config of the appliction
+type Config struct {
+	Window window.Config
+	Input  input.Config
+}
+
+// Context of the application.
+type Context struct {
+	// Config of application
+	Config Config
+
+	// Monitor (GLFW) to use for fullscreen, or nil for windowed.
+	Monitor *glfw.Monitor
+
+	// Window (GLFW) context.
+	Window *glfw.Window
+
+	// Program (GLSL) used for rendering the scene.
+	Program uint32
+}
+
 func init() {
 	// GLFW event handling must run on the main OS thread
 	runtime.LockOSThread()
 }
 
-// Config contains settings for running the app
-type Config struct {
-	Window window.Config
-	Input  input.Config
+// New Context for the application.
+func New(resetConf bool) (*Context, error) {
+
+	configPath, configName := getConfigPathName()
+
+	if resetConf {
+		fmt.Println("resetting config to defaults")
+		err := createConfig()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
+
+	var c Config
+	err := gcfg.ReadFileInto(&c, configPath+configName)
+	if err != nil {
+		if strings.Contains(err.Error(), "no such file or directory") {
+			createConfig()
+		} else {
+			fmt.Println(err)
+			os.Exit(2)
+		}
+	}
+
+	// TODO: Verify config settings are valid.
+
+	if err := glfw.Init(); err != nil {
+		return nil, err
+	}
+
+	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 2)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+
+	var monitor *glfw.Monitor
+	if c.Window.FullScreen {
+		// TODO: Maybe choose monitor based on config?
+		// http://www.glfw.org/docs/latest/monitor.html#monitor_monitors
+		monitor = glfw.GetPrimaryMonitor()
+	}
+
+	window, err := glfw.CreateWindow(c.Window.Width, c.Window.Height, "Flappy Disk", monitor, nil)
+	if err != nil {
+		return nil, err
+	}
+	window.MakeContextCurrent()
+
+	// Initialize Glow
+	if err := gl.Init(); err != nil {
+		return nil, err
+	}
+
+	fmt.Println("OpenGL version", gl.GoStr(gl.GetString(gl.VERSION)))
+
+	window.SetKeyCallback(keyCallback)
+
+	context := Context{
+		Config:  c,
+		Monitor: monitor,
+		Window:  window,
+	}
+
+	return &context, nil
 }
 
 func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
@@ -60,43 +147,10 @@ func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
 }
 
 // Run the application
-func (a Config) Run() {
-	if err := glfw.Init(); err != nil {
-		log.Fatalln("failed to initialize glfw:", err)
-	}
-	defer glfw.Terminate()
-
-	glfw.WindowHint(glfw.Resizable, glfw.False)
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 2)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-
-	var monitor *glfw.Monitor
-	if a.Window.FullScreen {
-		// TODO: Maybe choose monitor based on config?
-		// http://www.glfw.org/docs/latest/monitor.html#monitor_monitors
-		monitor = glfw.GetPrimaryMonitor()
-	}
-
-	window, err := glfw.CreateWindow(a.Window.Width, a.Window.Height, "Flappy Disk", monitor, nil)
-	if err != nil {
-		panic(err)
-	}
-	window.MakeContextCurrent()
-
-	// Initialize Glow
-	if err := gl.Init(); err != nil {
-		panic(err)
-	}
-
-	version := gl.GoStr(gl.GetString(gl.VERSION))
-	fmt.Println("OpenGL version", version)
-
-	window.SetKeyCallback(keyCallback)
+func (app Context) Run() {
 
 	// Configure the vertex and fragment shaders
-	program, err := shader.NewProgram(sprite.VertexShader, sprite.FragmentShader)
+	program, err := shader.New(sprite.VertexShader, sprite.FragmentShader)
 	if err != nil {
 		panic(err)
 	}
@@ -104,8 +158,8 @@ func (a Config) Run() {
 	gl.UseProgram(program)
 
 	var left, right, top, bottom, near, far float32
-	right = float32(a.Window.Width)
-	top = float32(a.Window.Height)
+	right = float32(app.Config.Window.Width)
+	top = float32(app.Config.Window.Height)
 	near = 0.1
 	far = 10.0
 
@@ -150,7 +204,7 @@ func (a Config) Run() {
 
 	previousTime := glfw.GetTime()
 
-	for !window.ShouldClose() {
+	for !app.Window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		// Update
@@ -163,7 +217,7 @@ func (a Config) Run() {
 
 		if player.Dead {
 			fmt.Println("You died!")
-			window.SetShouldClose(true)
+			app.Window.SetShouldClose(true)
 		}
 
 		// Render
@@ -174,7 +228,45 @@ func (a Config) Run() {
 		player.Draw()
 
 		// Maintenance
-		window.SwapBuffers()
+		app.Window.SwapBuffers()
 		glfw.PollEvents()
 	}
+}
+
+func (app Context) Terminate() {
+	glfw.Terminate()
+}
+
+func getConfigPathName() (string, string) {
+	usr, _ := user.Current()
+	return usr.HomeDir + "/.config/flappy-disk/", "app.conf"
+}
+
+func createConfig() error {
+	path, name := getConfigPathName()
+	err := os.MkdirAll(path, 0777)
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(path + name)
+	defer f.Close()
+	if err != nil {
+		return err
+	}
+
+	configData, err := gen.Asset("assets/default.conf")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	_, err = f.Write(configData)
+	if err != nil {
+		return err
+	}
+
+	f.Sync()
+
+	return nil
 }
