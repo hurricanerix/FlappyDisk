@@ -148,35 +148,7 @@ func keyCallback(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
 
 // Run the application
 func (app Context) Run() {
-
-	// Configure the vertex and fragment shaders
-	program, err := shader.New(sprite.VertexShader, sprite.FragmentShader)
-	if err != nil {
-		panic(err)
-	}
-
-	gl.UseProgram(program)
-
-	var left, right, top, bottom, near, far float32
-	right = float32(app.Config.Window.Width)
-	top = float32(app.Config.Window.Height)
-	near = 0.1
-	far = 10.0
-
-	projMatrix := mgl32.Ortho(left, right, bottom, top, near, far)
-	projUniform := gl.GetUniformLocation(program, gl.Str("ProjMatrix\x00"))
-	gl.UniformMatrix4fv(projUniform, 1, false, &projMatrix[0])
-
-	var eye, center, up mgl32.Vec3
-	eye = mgl32.Vec3{0.0, 0.0, 7.0}
-	center = mgl32.Vec3{0.0, 0.0, -1.0}
-	up = mgl32.Vec3{0.0, 1.0, 0.0}
-	viewMatrix := mgl32.LookAtV(eye, center, up)
-
-	viewUniform := gl.GetUniformLocation(program, gl.Str("ViewMatrix\x00"))
-	gl.UniformMatrix4fv(viewUniform, 1, false, &viewMatrix[0])
-
-	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
+	app.setup()
 
 	player, err := player.New()
 	if err != nil {
@@ -188,8 +160,8 @@ func (app Context) Run() {
 		panic(err)
 	}
 
-	player.Bind(program)
-	mountains.Bind(program)
+	player.Bind(app.Program)
+	mountains.Bind(app.Program)
 
 	// Configure global settings
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
@@ -221,7 +193,7 @@ func (app Context) Run() {
 		}
 
 		// Render
-		gl.UseProgram(program)
+		gl.UseProgram(app.Program)
 
 		// Drawing order matters here, draw from back to front.
 		mountains.Draw()
@@ -231,6 +203,38 @@ func (app Context) Run() {
 		app.Window.SwapBuffers()
 		glfw.PollEvents()
 	}
+}
+
+func (app *Context) setup() {
+	// Configure the vertex and fragment shaders
+	program, err := shader.New(sprite.VertexShader, sprite.FragmentShader)
+	if err != nil {
+		panic(err)
+	}
+	app.Program = program
+
+	gl.UseProgram(app.Program)
+
+	var left, right, top, bottom, near, far float32
+	right = float32(app.Config.Window.Width)
+	top = float32(app.Config.Window.Height)
+	near = 0.1
+	far = 10.0
+
+	projMatrix := mgl32.Ortho(left, right, bottom, top, near, far)
+	projUniform := gl.GetUniformLocation(app.Program, gl.Str("ProjMatrix\x00"))
+	gl.UniformMatrix4fv(projUniform, 1, false, &projMatrix[0])
+
+	var eye, center, up mgl32.Vec3
+	eye = mgl32.Vec3{0.0, 0.0, 7.0}
+	center = mgl32.Vec3{0.0, 0.0, -1.0}
+	up = mgl32.Vec3{0.0, 1.0, 0.0}
+	viewMatrix := mgl32.LookAtV(eye, center, up)
+
+	viewUniform := gl.GetUniformLocation(app.Program, gl.Str("ViewMatrix\x00"))
+	gl.UniformMatrix4fv(viewUniform, 1, false, &viewMatrix[0])
+
+	gl.BindFragDataLocation(app.Program, 0, gl.Str("outputColor\x00"))
 }
 
 func (app Context) Terminate() {

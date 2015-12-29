@@ -117,11 +117,9 @@ func (s *Sprite) Draw(rotation float32, translation mgl32.Vec3, scale float32) {
 	//gl.Enable(gl.DEPTH_TEST)
 
 	// Calculate Frame
-	println(s.CurrentFrame)
 	texScale := 1.0 / float32(s.FrameCount)
 	//texTrans := float32(s.CurrentFrame) * texScale
 	texTrans := texScale //float32(s.CurrentFrame) * texScale
-	println(texTrans)
 
 	// scale_x = 1.0/self.data['frame']['count']['x']
 	// scale_y = 1.0/self.data['frame']['count']['y']
