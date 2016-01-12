@@ -35,7 +35,7 @@ func init() {
 type Player struct {
 	Image   *sprite.Context
 	Rect    *shapes.Rect
-	resting bool
+	Alive   bool
 	dy      float32
 	jumpKey bool
 }
@@ -43,7 +43,9 @@ type Player struct {
 // New TODO doc
 func New(group *sprite.Group) (*Player, error) {
 	// TODO should take a group in as a argument
-	p := Player{}
+	p := Player{
+		Alive: true,
+	}
 
 	player, err := sprite.Load("floppy.png")
 	if err != nil {
@@ -88,6 +90,9 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 	p.dy = float32(math.Max(float64(-400.0), float64(p.dy-40.0)))
 
 	p.Rect.Y += p.dy * dt
+	if p.Rect.Top() < 0 {
+		p.Alive = false
+	}
 
 }
 

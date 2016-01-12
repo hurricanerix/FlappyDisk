@@ -16,6 +16,7 @@
 package game
 
 import (
+	"fmt"
 	"runtime"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
@@ -95,6 +96,11 @@ func (c *Context) Main(screen *display.Context) {
 		sprites.Update(dt/1000.0, nil)
 		screen.Fill(200.0/256.0, 200/256.0, 200/256.0)
 		//background.Draw(0, 0)
+		if p.Alive == false {
+			fmt.Println("You Died!")
+			running = false
+		}
+
 		sprites.Draw()
 
 		screen.Flip()
