@@ -22,6 +22,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/hurricanerix/FlappyDisk/player"
+	"github.com/hurricanerix/FlappyDisk/walls"
 	"github.com/hurricanerix/transylvania/display"
 	"github.com/hurricanerix/transylvania/events"
 	"github.com/hurricanerix/transylvania/sprite"
@@ -37,6 +38,7 @@ func init() {
 type Context struct {
 	Screen *display.Context
 	Player *player.Player
+	Walls  *sprite.Group
 }
 
 // New TODO doc
@@ -65,9 +67,14 @@ func (c *Context) Main(screen *display.Context) {
 		panic(err)
 	}
 
-	//c.Walls = sprite.NewGroup()
+	c.Walls = sprite.NewGroup()
+	_, err = walls.New(c.Walls)
+	if err != nil {
+		panic(err)
+	}
+	sprites.Add(c.Walls)
 	// TODO: should only load image data once.
-	//block, err := sprite.Load("block.png")
+	//block, err := sprite.Load("transistor.png")
 	//if err != nil {
 	//	panic(err)
 	//}
@@ -93,7 +100,7 @@ func (c *Context) Main(screen *display.Context) {
 			p.HandleEvent(event, dt/1000.0)
 		}
 
-		sprites.Update(dt/1000.0, nil)
+		sprites.Update(dt/1000.0, c.Walls)
 		screen.Fill(200.0/256.0, 200/256.0, 200/256.0)
 		//background.Draw(0, 0)
 		if p.Alive == false {
