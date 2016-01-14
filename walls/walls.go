@@ -72,7 +72,27 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 
 // Draw TODO doc
 func (w *Wall) Draw() {
-	w.Image.Draw(w.Rect.X, w.Rect.Y)
+	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+92.0)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+92.0)
+
+	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+64.0)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+64.0)
+
+	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+32.0)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0)
+
+	w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y)
+
+	w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y-32.0)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0)
+
+	w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y-64.0)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-64.0)
+
+	w.Image.DrawFrame(3, w.Rect.X, w.Rect.Y-92.0)
+	w.Image.DrawFrame(4, w.Rect.X+32.0, w.Rect.Y-92.0)
+
 }
 
 // Bounds TODO doc
