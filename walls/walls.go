@@ -40,7 +40,7 @@ func New(group *sprite.Group) (*Wall, error) {
 	// TODO should take a group in as a argument
 	w := Wall{}
 
-	wall, err := sprite.Load("transistor.png")
+	wall, err := sprite.Load("transistor.png", 32)
 	if err != nil {
 		return &w, fmt.Errorf("could not load wall: %v", err)
 	}

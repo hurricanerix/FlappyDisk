@@ -55,7 +55,7 @@ func (c *Context) Main(screen *display.Context) {
 		panic(err)
 	}
 
-	//background, err := sprite.Load("background.png")
+	//background, err := sprite.Load("background.png", 1)
 	//if err != nil {
 	//	panic(err)
 	//}
@@ -74,7 +74,7 @@ func (c *Context) Main(screen *display.Context) {
 	}
 	sprites.Add(c.Walls)
 	// TODO: should only load image data once.
-	//block, err := sprite.Load("transistor.png")
+	//block, err := sprite.Load("transistor.png", 1)
 	//if err != nil {
 	//	panic(err)
 	//}
