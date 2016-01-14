@@ -68,11 +68,17 @@ func (c *Context) Main(screen *display.Context) {
 	}
 
 	c.Walls = sprite.NewGroup()
-	_, err = walls.New(c.Walls)
+	sprites.Add(c.Walls)
+
+	_, err = walls.New(true, 120, c.Walls)
 	if err != nil {
 		panic(err)
 	}
-	sprites.Add(c.Walls)
+	_, err = walls.New(false, 120, c.Walls)
+	if err != nil {
+		panic(err)
+	}
+
 	// TODO: should only load image data once.
 	//block, err := sprite.Load("transistor.png", 1)
 	//if err != nil {

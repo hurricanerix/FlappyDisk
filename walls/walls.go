@@ -33,12 +33,15 @@ type Wall struct {
 	Image *sprite.Context
 	Rect  *shapes.Rect
 	dx    float32
+	top   bool
 }
 
 // New TODO doc
-func New(group *sprite.Group) (*Wall, error) {
+func New(top bool, offset int, group *sprite.Group) (*Wall, error) {
 	// TODO should take a group in as a argument
-	w := Wall{}
+	w := Wall{
+		top: top,
+	}
 
 	wall, err := sprite.Load("resistor.png", 32)
 	if err != nil {
@@ -46,11 +49,16 @@ func New(group *sprite.Group) (*Wall, error) {
 	}
 	w.Image = wall
 
-	rect, err := shapes.NewRect(640.0, 440.0, float32(w.Image.Width), float32(w.Image.Height))
+	rect, err := shapes.NewRect(640.0, float32(offset), 64.0, 480.0)
 	if err != nil {
 		return &w, fmt.Errorf("could create rect: %v", err)
 	}
 	w.Rect = rect
+	if w.top {
+		w.Rect.Y += 80
+	} else {
+		w.Rect.Y += -480 + 20
+	}
 
 	// TODO: this should probably be added outside of player
 	group.Add(&w)
@@ -70,47 +78,37 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 
 // Draw TODO doc
 func (w *Wall) Draw() {
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+92.0)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+92.0)
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+64.0)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+64.0)
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+32.0)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0)
+	if w.top {
+		for i := 32.0 * 3; i < 480; i += 32 {
+			w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+float32(i))
+			w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+float32(i))
+		}
 
-	// Wires ^^^
-
-	w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y)
-	w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y-32.0)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0)
-	w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y-32.0*2)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*2)
-	w.Image.DrawFrame(3, w.Rect.X, w.Rect.Y-32.0*3)
-	w.Image.DrawFrame(4, w.Rect.X+32.0, w.Rect.Y-32*3.0)
-
-	// Hole
+		w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y+32.0*3)
+		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0*3)
+		w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y+32.0*2)
+		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0*2)
+		w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y+32.0*1)
+		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0*1)
+		w.Image.DrawFrame(3, w.Rect.X, w.Rect.Y+32.0*0)
+		w.Image.DrawFrame(4, w.Rect.X+32, w.Rect.Y+32.0*0)
+		return
+	}
 
 	// bottom resistor
-	w.Image.DrawFrame(5, w.Rect.X, w.Rect.Y-32.0*6)
-	w.Image.DrawFrame(6, w.Rect.X+32.0, w.Rect.Y-32.0*6)
-	w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y-32*7)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32*7)
-	w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y-32.0*8)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*8)
-	w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y-32.0*9)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*9)
+	w.Image.DrawFrame(5, w.Rect.X, w.Rect.Y+480-32*1)
+	w.Image.DrawFrame(6, w.Rect.X+32.0, w.Rect.Y+480-32.0*1)
+	w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y+480-32*2)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+480-32*2)
+	w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y+480-32.0*3)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+480-32.0*3)
+	w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y+480-32.0*4)
+	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+480-32.0*4)
 
-	// bottom wires
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y-32.0*10)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*10)
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y-32.0*11)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*11)
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y-32.0*12)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*12)
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y-32.0*13)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*13)
-	w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y-32.0*14)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y-32.0*14)
+	for i := 0; i < 480-32*4; i += 32 {
+		w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+float32(i))
+		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+float32(i))
+	}
 }
 
 // Bounds TODO doc

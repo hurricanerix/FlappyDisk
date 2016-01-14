@@ -94,6 +94,12 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 		p.Alive = false
 	}
 
+	for _, cell := range sprite.Collide(p, g, false) {
+		println(cell)
+		if cell != nil {
+			p.Alive = false
+		}
+	}
 }
 
 // Draw TODO doc
