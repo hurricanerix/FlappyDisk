@@ -57,7 +57,7 @@ func New(top bool, offset int, group *sprite.Group) (*Wall, error) {
 	if w.top {
 		w.Rect.Y += 80
 	} else {
-		w.Rect.Y += -480 + 20
+		w.Rect.Y += -480 - 30
 	}
 
 	// TODO: this should probably be added outside of player
@@ -74,6 +74,10 @@ func (w *Wall) Bind(program uint32) error {
 func (w *Wall) Update(dt float32, g *sprite.Group) {
 	w.dx = -250.0
 	w.Rect.X += w.dx * dt
+
+	if w.Rect.X+float32(w.Image.Width) < 0.0 {
+		w.Rect.X = 641
+	}
 }
 
 // Draw TODO doc
