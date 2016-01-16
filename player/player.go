@@ -83,6 +83,7 @@ func (p *Player) Bind(program uint32) error {
 
 // Update TODO doc
 func (p *Player) Update(dt float32, g *sprite.Group) {
+	println("Player Y: ", int(p.Rect.Y))
 
 	if p.jumpKey {
 		p.dy = 500.0
@@ -92,6 +93,10 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 	p.Rect.Y += p.dy * dt
 	if p.Rect.Top() < 0 {
 		p.Alive = false
+		p.Rect.Y = 0.0 - float32(p.Image.Height)
+	}
+	if p.Rect.Bottom() > 480 {
+		p.Rect.Y = 480
 	}
 
 	for _, cell := range sprite.Collide(p, g, false) {

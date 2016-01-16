@@ -30,6 +30,7 @@ var gitURL = "https://github.com/hurricanerix/FlappyDisk"
 
 var (
 	resetConf bool
+	cheat     bool
 	version   bool
 )
 
@@ -40,6 +41,7 @@ func init() {
 
 func init() {
 	flag.BoolVar(&version, "version", false, "print version and build info.")
+	flag.BoolVar(&cheat, "cheat", false, "cheat mode.")
 }
 
 func main() {
@@ -57,6 +59,8 @@ func main() {
 		os.Exit(0)
 	}
 
+	config := game.Config{Cheat: cheat}
+
 	screen, err := display.SetMode(640, 480)
 	if err != nil {
 		log.Fatalln("failed to set display mode:", err)
@@ -67,5 +71,5 @@ func main() {
 		log.Fatalln("failed to create game:", err)
 	}
 
-	g.Main(screen)
+	g.Main(screen, config)
 }

@@ -34,6 +34,11 @@ func init() {
 	runtime.LockOSThread()
 }
 
+// Config TODO doc
+type Config struct {
+	Cheat bool
+}
+
 // Context TODO doc
 type Context struct {
 	Screen *display.Context
@@ -49,7 +54,7 @@ func New(screen *display.Context) (Context, error) {
 }
 
 // Main TODO doc
-func (c *Context) Main(screen *display.Context) {
+func (c *Context) Main(screen *display.Context, config Config) {
 	clock, err := clock.New()
 	if err != nil {
 		panic(err)
@@ -88,6 +93,7 @@ func (c *Context) Main(screen *display.Context) {
 
 	sprites.Bind(c.Screen.Program)
 	for running := true; running; {
+		p.Alive = true
 		dt := clock.Tick(30)
 
 		// TODO move this somewhere else (maybe a Clear method of display
@@ -111,7 +117,9 @@ func (c *Context) Main(screen *display.Context) {
 		//background.Draw(0, 0)
 		if p.Alive == false {
 			fmt.Println("You Died!")
-			running = false
+			if !config.Cheat {
+				running = false
+			}
 		}
 
 		sprites.Draw()
