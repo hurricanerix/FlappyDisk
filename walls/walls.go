@@ -17,6 +17,7 @@ package walls
 
 import (
 	"fmt"
+	"math/rand"
 	"runtime"
 
 	"github.com/hurricanerix/transylvania/shapes"
@@ -30,17 +31,22 @@ func init() {
 
 // Player TODO doc
 type Wall struct {
-	Image *sprite.Context
-	Rect  *shapes.Rect
-	dx    float32
-	top   bool
+	Image      *sprite.Context
+	TopRect    *shapes.Rect
+	BottomRect *shapes.Rect
+	width      float32
+	dx         float32
+	offset     float32
+	size       float32
 }
 
 // New TODO doc
-func New(top bool, offset int, group *sprite.Group) (*Wall, error) {
+func New(group *sprite.Group) (*Wall, error) {
 	// TODO should take a group in as a argument
 	w := Wall{
-		top: top,
+		width:  32.0 * 2,
+		offset: 240.0,
+		size:   80.0,
 	}
 
 	wall, err := sprite.Load("resistor.png", 32)
@@ -49,16 +55,17 @@ func New(top bool, offset int, group *sprite.Group) (*Wall, error) {
 	}
 	w.Image = wall
 
-	rect, err := shapes.NewRect(640.0, float32(offset), 64.0, 480.0)
+	topRect, err := shapes.NewRect(640.0-w.width, w.offset+w.size/2.0, 64.0, 480.0)
 	if err != nil {
-		return &w, fmt.Errorf("could create rect: %v", err)
+		return &w, fmt.Errorf("could not create top rect: %v", err)
 	}
-	w.Rect = rect
-	if w.top {
-		w.Rect.Y += 80
-	} else {
-		w.Rect.Y += -480 - 30
+	w.TopRect = topRect
+
+	bottomRect, err := shapes.NewRect(640.0-w.width, w.offset-w.size/2.0, 64.0, 480.0)
+	if err != nil {
+		return &w, fmt.Errorf("could create bottom rect: %v", err)
 	}
+	w.BottomRect = bottomRect
 
 	// TODO: this should probably be added outside of player
 	group.Add(&w)
@@ -73,49 +80,54 @@ func (w *Wall) Bind(program uint32) error {
 // Update TODO doc
 func (w *Wall) Update(dt float32, g *sprite.Group) {
 	w.dx = -250.0
-	w.Rect.X += w.dx * dt
-
-	if w.Rect.X+float32(w.Image.Width) < 0.0 {
-		w.Rect.X = 641
+	w.TopRect.X += w.dx * dt
+	w.BottomRect.X += w.dx * dt
+	if w.TopRect.X+float32(w.Image.Width) < 0.0 {
+		var min int = int(w.size)
+		var max int = 480 - int(w.size)
+		w.offset = float32(rand.Intn(max-min) + min)
+		w.TopRect.X = 641
+		w.BottomRect.X = 641
+		w.TopRect.Y = w.offset + w.size/2.0
+		w.BottomRect.Y = w.offset - w.size/2.0
 	}
 }
 
 // Draw TODO doc
 func (w *Wall) Draw() {
-	if w.top {
-		for i := 32.0 * 3; i < 480; i += 32 {
-			w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+float32(i))
-			w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+float32(i))
-		}
-
-		w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y+32.0*3)
-		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0*3)
-		w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y+32.0*2)
-		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0*2)
-		w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y+32.0*1)
-		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+32.0*1)
-		w.Image.DrawFrame(3, w.Rect.X, w.Rect.Y+32.0*0)
-		w.Image.DrawFrame(4, w.Rect.X+32, w.Rect.Y+32.0*0)
-		return
+	for i := 32.0 * 3; i < 480; i += 32 {
+		w.Image.DrawFrame(7, w.TopRect.X, w.TopRect.Y+float32(i))
+		w.Image.DrawFrame(8, w.TopRect.X+32.0, w.TopRect.Y+float32(i))
 	}
+	w.Image.DrawFrame(0, w.TopRect.X, w.TopRect.Y+32.0*3)
+	w.Image.DrawFrame(8, w.TopRect.X+32.0, w.TopRect.Y+32.0*3)
+	w.Image.DrawFrame(1, w.TopRect.X, w.TopRect.Y+32.0*2)
+	w.Image.DrawFrame(8, w.TopRect.X+32.0, w.TopRect.Y+32.0*2)
+	w.Image.DrawFrame(2, w.TopRect.X, w.TopRect.Y+32.0*1)
+	w.Image.DrawFrame(8, w.TopRect.X+32.0, w.TopRect.Y+32.0*1)
+	w.Image.DrawFrame(3, w.TopRect.X, w.TopRect.Y+32.0*0)
+	w.Image.DrawFrame(4, w.TopRect.X+32, w.TopRect.Y+32.0*0)
 
 	// bottom resistor
-	w.Image.DrawFrame(5, w.Rect.X, w.Rect.Y+480-32*1)
-	w.Image.DrawFrame(6, w.Rect.X+32.0, w.Rect.Y+480-32.0*1)
-	w.Image.DrawFrame(0, w.Rect.X, w.Rect.Y+480-32*2)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+480-32*2)
-	w.Image.DrawFrame(1, w.Rect.X, w.Rect.Y+480-32.0*3)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+480-32.0*3)
-	w.Image.DrawFrame(2, w.Rect.X, w.Rect.Y+480-32.0*4)
-	w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+480-32.0*4)
-
-	for i := 0; i < 480-32*4; i += 32 {
-		w.Image.DrawFrame(7, w.Rect.X, w.Rect.Y+float32(i))
-		w.Image.DrawFrame(8, w.Rect.X+32.0, w.Rect.Y+float32(i))
+	w.Image.DrawFrame(5, w.BottomRect.X, w.BottomRect.Y-32*1)
+	w.Image.DrawFrame(6, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*1)
+	w.Image.DrawFrame(0, w.BottomRect.X, w.BottomRect.Y-32*2)
+	w.Image.DrawFrame(8, w.BottomRect.X+32.0, w.BottomRect.Y-32*2)
+	w.Image.DrawFrame(1, w.BottomRect.X, w.BottomRect.Y-32.0*3)
+	w.Image.DrawFrame(8, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*3)
+	w.Image.DrawFrame(2, w.BottomRect.X, w.BottomRect.Y-32.0*4)
+	w.Image.DrawFrame(8, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*4)
+	for i := 32 * 5; i < 32*13; i += 32 {
+		w.Image.DrawFrame(7, w.BottomRect.X, w.BottomRect.Y-float32(i))
+		w.Image.DrawFrame(8, w.BottomRect.X+32.0, w.BottomRect.Y-float32(i))
 	}
 }
 
 // Bounds TODO doc
-func (w *Wall) Bounds() shapes.Rect {
-	return *(w.Rect)
+func (w *Wall) Bounds() chan shapes.Rect {
+	b := make(chan shapes.Rect, 2)
+	b <- *w.TopRect
+	b <- *w.BottomRect
+	close(b)
+	return b
 }

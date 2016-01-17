@@ -83,8 +83,6 @@ func (p *Player) Bind(program uint32) error {
 
 // Update TODO doc
 func (p *Player) Update(dt float32, g *sprite.Group) {
-	println("Player Y: ", int(p.Rect.Y))
-
 	if p.jumpKey {
 		p.dy = 500.0
 	}
@@ -100,7 +98,6 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 	}
 
 	for _, cell := range sprite.Collide(p, g, false) {
-		println(cell)
 		if cell != nil {
 			p.Alive = false
 		}
@@ -113,6 +110,9 @@ func (p *Player) Draw() {
 }
 
 // Bounds TODO doc
-func (p *Player) Bounds() shapes.Rect {
-	return *(p.Rect)
+func (p *Player) Bounds() chan shapes.Rect {
+	b := make(chan shapes.Rect, 1)
+	b <- *p.Rect
+	close(b)
+	return b
 }
