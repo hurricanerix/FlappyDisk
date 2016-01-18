@@ -24,6 +24,7 @@ import (
 
 	"github.com/hurricanerix/FlappyDisk/game"
 	"github.com/hurricanerix/transylvania/display"
+	"github.com/hurricanerix/transylvania/splash"
 )
 
 var gitURL = "https://github.com/hurricanerix/FlappyDisk"
@@ -31,6 +32,7 @@ var gitURL = "https://github.com/hurricanerix/FlappyDisk"
 var (
 	resetConf bool
 	cheat     bool
+	nosplash  bool
 	version   bool
 )
 
@@ -42,6 +44,7 @@ func init() {
 func init() {
 	flag.BoolVar(&version, "version", false, "print version and build info.")
 	flag.BoolVar(&cheat, "cheat", false, "cheat mode.")
+	flag.BoolVar(&nosplash, "nosplash", false, "don't show splash screen.")
 }
 
 func main() {
@@ -71,5 +74,8 @@ func main() {
 		log.Fatalln("failed to create game:", err)
 	}
 
+	if !nosplash {
+		splash.Main(screen)
+	}
 	g.Main(screen, config)
 }
