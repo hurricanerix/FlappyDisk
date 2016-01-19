@@ -64,7 +64,7 @@ func main() {
 
 	config := game.Config{Cheat: cheat}
 
-	screen, err := display.SetMode(640, 480)
+	screen, err := display.SetMode("FlappyDisk", 640, 480)
 	if err != nil {
 		log.Fatalln("failed to set display mode:", err)
 	}
