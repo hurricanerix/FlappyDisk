@@ -47,7 +47,7 @@ func New(group *sprite.Group) (*Player, error) {
 		Alive: true,
 	}
 
-	player, err := sprite.Load("floppy.png", 1)
+	player, err := sprite.Load("floppy.png", 1, 1)
 	if err != nil {
 		return &p, fmt.Errorf("could not load player: %v", err)
 	}
