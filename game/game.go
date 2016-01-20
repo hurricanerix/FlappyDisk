@@ -131,6 +131,11 @@ func (c *Context) Main(screen *display.Context, config Config) {
 
 		sprites.Draw()
 
+		// TODO: implement score
+		msg := fmt.Sprintf("%d", 0)
+		w, h := font.SizeText(3.0, 3.0, msg)
+		font.DrawText(screen.Width/2-w/2, screen.Height-h, 3.0, 3.0, msg)
+
 		if config.Cheat {
 			msg := "Dev Mode!\n"
 			msg += fmt.Sprintf("Pos: %.0f, %.0f\n", p.Rect.X, p.Rect.Y)
