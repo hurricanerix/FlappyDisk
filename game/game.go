@@ -25,6 +25,7 @@ import (
 	"github.com/hurricanerix/FlappyDisk/walls"
 	"github.com/hurricanerix/transylvania/display"
 	"github.com/hurricanerix/transylvania/events"
+	"github.com/hurricanerix/transylvania/fonts"
 	"github.com/hurricanerix/transylvania/sprite"
 	"github.com/hurricanerix/transylvania/time/clock"
 )
@@ -90,6 +91,11 @@ func (c *Context) Main(screen *display.Context, config Config) {
 	//	panic(err)
 	//}
 	//println(block)
+	font, err := fonts.New()
+	if err != nil {
+		panic(err)
+	}
+	font.Bind(screen.Program)
 
 	sprites.Bind(c.Screen.Program)
 	for running := true; running; {
@@ -116,7 +122,8 @@ func (c *Context) Main(screen *display.Context, config Config) {
 		screen.Fill(200.0/256.0, 200/256.0, 200/256.0)
 		//background.Draw(0, 0)
 		if p.Alive == false {
-			fmt.Println("You Died!")
+			msg := "You Died!"
+			font.DrawText(250, 250, 2.0, 2.0, msg)
 			if !config.Cheat {
 				running = false
 			}
@@ -124,6 +131,13 @@ func (c *Context) Main(screen *display.Context, config Config) {
 
 		sprites.Draw()
 
+		if config.Cheat {
+			msg := "Dev Mode!\n"
+			msg += fmt.Sprintf("Pos: %.0f, %.0f\n", p.Rect.X, p.Rect.Y)
+			msg += fmt.Sprintf("Status: %t\n", p.Alive)
+			_, h := font.SizeText(1.0, 1.0, msg)
+			font.DrawText(0, 480-h, 2.0, 2.0, msg)
+		}
 		screen.Flip()
 
 		// TODO refector events to be cleaner
