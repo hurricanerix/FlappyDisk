@@ -23,8 +23,8 @@ import (
 	"runtime"
 
 	"github.com/hurricanerix/FlappyDisk/game"
-	"github.com/hurricanerix/transylvania/display"
-	"github.com/hurricanerix/transylvania/splash"
+	"github.com/hurricanerix/shade/display"
+	"github.com/hurricanerix/shade/splash"
 )
 
 var gitURL = "https://github.com/hurricanerix/FlappyDisk"

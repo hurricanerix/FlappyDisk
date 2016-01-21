@@ -21,9 +21,9 @@ import (
 	"runtime"
 
 	"github.com/go-gl/glfw/v3.1/glfw"
-	"github.com/hurricanerix/transylvania/events"
-	"github.com/hurricanerix/transylvania/shapes"
-	"github.com/hurricanerix/transylvania/sprite"
+	"github.com/hurricanerix/shade/events"
+	"github.com/hurricanerix/shade/shapes"
+	"github.com/hurricanerix/shade/sprite"
 )
 
 func init() {

@@ -20,8 +20,8 @@ import (
 	"math/rand"
 	"runtime"
 
-	"github.com/hurricanerix/transylvania/shapes"
-	"github.com/hurricanerix/transylvania/sprite"
+	"github.com/hurricanerix/shade/shapes"
+	"github.com/hurricanerix/shade/sprite"
 )
 
 func init() {
