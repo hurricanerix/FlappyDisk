@@ -21,6 +21,7 @@ import (
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/FlappyDisk/player"
 	"github.com/hurricanerix/FlappyDisk/walls"
 	"github.com/hurricanerix/shade/display"
@@ -123,7 +124,7 @@ func (c *Context) Main(screen *display.Context, config Config) {
 		//background.Draw(0, 0)
 		if p.Alive == false {
 			msg := "You Died!"
-			font.DrawText(250, 250, 2.0, 2.0, msg)
+			font.DrawText(250, 250, 2.0, 2.0, nil, msg)
 			if !config.Cheat {
 				running = false
 			}
@@ -134,14 +135,14 @@ func (c *Context) Main(screen *display.Context, config Config) {
 		// TODO: implement score
 		msg := fmt.Sprintf("%d", 0)
 		w, h := font.SizeText(3.0, 3.0, msg)
-		font.DrawText(screen.Width/2-w/2, screen.Height-h, 3.0, 3.0, msg)
+		font.DrawText(screen.Width/2-w/2, screen.Height-h, 3.0, 3.0, nil, msg)
 
 		if config.Cheat {
 			msg := "Dev Mode!\n"
 			msg += fmt.Sprintf("Pos: %.0f, %.0f\n", p.Rect.X, p.Rect.Y)
 			msg += fmt.Sprintf("Status: %t\n", p.Alive)
 			_, h := font.SizeText(1.0, 1.0, msg)
-			font.DrawText(0, 480-h, 2.0, 2.0, msg)
+			font.DrawText(0, 480-h, 2.0, 2.0, &mgl32.Vec4{0.0, 0.0, 0.0, 0.5}, msg)
 		}
 		screen.Flip()
 

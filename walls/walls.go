@@ -96,30 +96,30 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 // Draw TODO doc
 func (w *Wall) Draw() {
 	for i := 32.0 * 3; i < 480; i += 32 {
-		w.Image.DrawFrame(7, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+float32(i))
-		w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+float32(i))
+		w.Image.DrawFrame(7, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+float32(i), nil, nil)
+		w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+float32(i), nil, nil)
 	}
-	w.Image.DrawFrame(0, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*3)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*3)
-	w.Image.DrawFrame(1, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*2)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*2)
-	w.Image.DrawFrame(2, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*1)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*1)
-	w.Image.DrawFrame(3, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*0)
-	w.Image.DrawFrame(4, 0, 1.0, 1.0, w.TopRect.X+32, w.TopRect.Y+32.0*0)
+	w.Image.DrawFrame(0, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*3, nil, nil)
+	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*3, nil, nil)
+	w.Image.DrawFrame(1, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*2, nil, nil)
+	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*2, nil, nil)
+	w.Image.DrawFrame(2, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*1, nil, nil)
+	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*1, nil, nil)
+	w.Image.DrawFrame(3, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*0, nil, nil)
+	w.Image.DrawFrame(4, 0, 1.0, 1.0, w.TopRect.X+32, w.TopRect.Y+32.0*0, nil, nil)
 
 	// bottom resistor
-	w.Image.DrawFrame(5, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*1)
-	w.Image.DrawFrame(6, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*1)
-	w.Image.DrawFrame(0, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*2)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32*2)
-	w.Image.DrawFrame(1, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*3)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*3)
-	w.Image.DrawFrame(2, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*4)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*4)
+	w.Image.DrawFrame(5, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*1, nil, nil)
+	w.Image.DrawFrame(6, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*1, nil, nil)
+	w.Image.DrawFrame(0, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*2, nil, nil)
+	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32*2, nil, nil)
+	w.Image.DrawFrame(1, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*3, nil, nil)
+	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*3, nil, nil)
+	w.Image.DrawFrame(2, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*4, nil, nil)
+	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*4, nil, nil)
 	for i := 32 * 5; i < 32*13; i += 32 {
-		w.Image.DrawFrame(7, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-float32(i))
-		w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-float32(i))
+		w.Image.DrawFrame(7, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-float32(i), nil, nil)
+		w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-float32(i), nil, nil)
 	}
 }
 
