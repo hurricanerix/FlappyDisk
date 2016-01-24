@@ -69,30 +69,30 @@ func (c *Context) Main(screen *display.Context, config Config) {
 	//background.Bind(c.Screen.Program)
 
 	sprites := sprite.NewGroup()
-	p, err := player.New(sprites)
+	c.Walls = sprite.NewGroup()
+
+	playerSprite, err := loadSprite("floppy.png", 1, 1)
+	if err != nil {
+		panic(err)
+	}
+	p, err := player.New(320.0, 240.0, playerSprite, sprites)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Walls = sprite.NewGroup()
+	wallSprite, err := loadSprite("resistor.png", 32, 1)
+	if err != nil {
+		panic(err)
+	}
+
 	sprites.Add(c.Walls)
 
-	_, err = walls.New(c.Walls)
+	_, err = walls.New(640, 240, 80, wallSprite, c.Walls)
 	if err != nil {
 		panic(err)
 	}
-	//_, err = walls.New(false, 120, c.Walls)
-	//if err != nil {
-	//panic(err)
-	//}
 
-	// TODO: should only load image data once.
-	//block, err := sprite.Load("transistor.png", 1)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//println(block)
-	font, err := fonts.New()
+	font, err := fonts.SimpleASCII()
 	if err != nil {
 		panic(err)
 	}
@@ -149,4 +149,17 @@ func (c *Context) Main(screen *display.Context, config Config) {
 		// TODO refector events to be cleaner
 		glfw.PollEvents()
 	}
+}
+
+func loadSprite(path string, framesWide, framesHigh int) (*sprite.Context, error) {
+	i, err := sprite.Load(path)
+	if err != nil {
+		return nil, err
+	}
+	s, err := sprite.New(i, framesWide, framesHigh)
+	if err != nil {
+		return nil, err
+	}
+
+	return s, nil
 }

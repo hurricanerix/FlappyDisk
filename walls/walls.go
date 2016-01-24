@@ -31,7 +31,7 @@ func init() {
 
 // Player TODO doc
 type Wall struct {
-	Image      *sprite.Context
+	Sprite     *sprite.Context
 	TopRect    *shapes.Rect
 	BottomRect *shapes.Rect
 	width      float32
@@ -41,19 +41,14 @@ type Wall struct {
 }
 
 // New TODO doc
-func New(group *sprite.Group) (*Wall, error) {
+func New(x, offset, size float32, s *sprite.Context, group *sprite.Group) (*Wall, error) {
 	// TODO should take a group in as a argument
 	w := Wall{
+		Sprite: s,
 		width:  32.0 * 2,
-		offset: 240.0,
-		size:   80.0,
+		offset: offset,
+		size:   size,
 	}
-
-	wall, err := sprite.Load("resistor.png", 32, 1)
-	if err != nil {
-		return &w, fmt.Errorf("could not load wall: %v", err)
-	}
-	w.Image = wall
 
 	topRect, err := shapes.NewRect(640.0-w.width, w.offset+w.size/2.0, 64.0, 480.0)
 	if err != nil {
@@ -74,7 +69,7 @@ func New(group *sprite.Group) (*Wall, error) {
 
 // Bind TODO doc
 func (w *Wall) Bind(program uint32) error {
-	return w.Image.Bind(program)
+	return w.Sprite.Bind(program)
 }
 
 // Update TODO doc
@@ -82,7 +77,7 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 	w.dx = -250.0
 	w.TopRect.X += w.dx * dt
 	w.BottomRect.X += w.dx * dt
-	if w.TopRect.X+float32(w.Image.Width) < 0.0 {
+	if w.TopRect.X+float32(w.Sprite.Width) < 0.0 {
 		var min int = int(w.size)
 		var max int = 480 - int(w.size)
 		w.offset = float32(rand.Intn(max-min) + min)
@@ -96,30 +91,30 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 // Draw TODO doc
 func (w *Wall) Draw() {
 	for i := 32.0 * 3; i < 480; i += 32 {
-		w.Image.DrawFrame(7, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+float32(i), nil, nil)
-		w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+float32(i), nil, nil)
+		w.Sprite.DrawFrame(7, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+float32(i), nil, nil)
+		w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+float32(i), nil, nil)
 	}
-	w.Image.DrawFrame(0, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*3, nil, nil)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*3, nil, nil)
-	w.Image.DrawFrame(1, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*2, nil, nil)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*2, nil, nil)
-	w.Image.DrawFrame(2, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*1, nil, nil)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*1, nil, nil)
-	w.Image.DrawFrame(3, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*0, nil, nil)
-	w.Image.DrawFrame(4, 0, 1.0, 1.0, w.TopRect.X+32, w.TopRect.Y+32.0*0, nil, nil)
+	w.Sprite.DrawFrame(0, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*3, nil, nil)
+	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*3, nil, nil)
+	w.Sprite.DrawFrame(1, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*2, nil, nil)
+	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*2, nil, nil)
+	w.Sprite.DrawFrame(2, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*1, nil, nil)
+	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*1, nil, nil)
+	w.Sprite.DrawFrame(3, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*0, nil, nil)
+	w.Sprite.DrawFrame(4, 0, 1.0, 1.0, w.TopRect.X+32, w.TopRect.Y+32.0*0, nil, nil)
 
 	// bottom resistor
-	w.Image.DrawFrame(5, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*1, nil, nil)
-	w.Image.DrawFrame(6, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*1, nil, nil)
-	w.Image.DrawFrame(0, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*2, nil, nil)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32*2, nil, nil)
-	w.Image.DrawFrame(1, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*3, nil, nil)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*3, nil, nil)
-	w.Image.DrawFrame(2, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*4, nil, nil)
-	w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*4, nil, nil)
+	w.Sprite.DrawFrame(5, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*1, nil, nil)
+	w.Sprite.DrawFrame(6, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*1, nil, nil)
+	w.Sprite.DrawFrame(0, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*2, nil, nil)
+	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32*2, nil, nil)
+	w.Sprite.DrawFrame(1, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*3, nil, nil)
+	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*3, nil, nil)
+	w.Sprite.DrawFrame(2, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*4, nil, nil)
+	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*4, nil, nil)
 	for i := 32 * 5; i < 32*13; i += 32 {
-		w.Image.DrawFrame(7, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-float32(i), nil, nil)
-		w.Image.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-float32(i), nil, nil)
+		w.Sprite.DrawFrame(7, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-float32(i), nil, nil)
+		w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-float32(i), nil, nil)
 	}
 }
 

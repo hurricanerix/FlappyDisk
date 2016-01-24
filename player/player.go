@@ -33,7 +33,7 @@ func init() {
 
 // Player TODO doc
 type Player struct {
-	Image   *sprite.Context
+	Sprite  *sprite.Context
 	Rect    *shapes.Rect
 	Alive   bool
 	dy      float32
@@ -41,19 +41,14 @@ type Player struct {
 }
 
 // New TODO doc
-func New(group *sprite.Group) (*Player, error) {
+func New(x, y float32, s *sprite.Context, group *sprite.Group) (*Player, error) {
 	// TODO should take a group in as a argument
 	p := Player{
-		Alive: true,
+		Sprite: s,
+		Alive:  true,
 	}
 
-	player, err := sprite.Load("floppy.png", 1, 1)
-	if err != nil {
-		return &p, fmt.Errorf("could not load player: %v", err)
-	}
-	p.Image = player
-
-	rect, err := shapes.NewRect(320.0, 240.0, float32(p.Image.Width), float32(p.Image.Height))
+	rect, err := shapes.NewRect(x, y, float32(p.Sprite.Width), float32(p.Sprite.Height))
 	if err != nil {
 		return &p, fmt.Errorf("could create rect: %v", err)
 	}
@@ -78,7 +73,7 @@ func (p *Player) HandleEvent(event events.Event, dt float32) {
 
 // Bind TODO doc
 func (p *Player) Bind(program uint32) error {
-	return p.Image.Bind(program)
+	return p.Sprite.Bind(program)
 }
 
 // Update TODO doc
@@ -91,7 +86,7 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 	p.Rect.Y += p.dy * dt
 	if p.Rect.Top() < 0 {
 		p.Alive = false
-		p.Rect.Y = 0.0 - float32(p.Image.Height)
+		p.Rect.Y = 0.0 - float32(p.Sprite.Height)
 	}
 	if p.Rect.Bottom() > 480 {
 		p.Rect.Y = 480
@@ -106,7 +101,7 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 
 // Draw TODO doc
 func (p *Player) Draw() {
-	p.Image.Draw(p.Rect.X, p.Rect.Y)
+	p.Sprite.Draw(p.Rect.X, p.Rect.Y)
 }
 
 // Bounds TODO doc
