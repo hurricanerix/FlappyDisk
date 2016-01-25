@@ -16,12 +16,15 @@
 package game
 
 import (
+	"bytes"
 	"fmt"
+	"image"
 	"runtime"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/hurricanerix/FlappyDisk/gen"
 	"github.com/hurricanerix/FlappyDisk/player"
 	"github.com/hurricanerix/FlappyDisk/walls"
 	"github.com/hurricanerix/shade/display"
@@ -71,7 +74,7 @@ func (c *Context) Main(screen *display.Context, config Config) {
 	sprites := sprite.NewGroup()
 	c.Walls = sprite.NewGroup()
 
-	playerSprite, err := loadSprite("floppy.png", 1, 1)
+	playerSprite, err := loadSprite("assets/floppy.png", 1, 1)
 	if err != nil {
 		panic(err)
 	}
@@ -80,7 +83,7 @@ func (c *Context) Main(screen *display.Context, config Config) {
 		panic(err)
 	}
 
-	wallSprite, err := loadSprite("resistor.png", 32, 1)
+	wallSprite, err := loadSprite("assets/resistor.png", 32, 1)
 	if err != nil {
 		panic(err)
 	}
@@ -151,11 +154,16 @@ func (c *Context) Main(screen *display.Context, config Config) {
 	}
 }
 
-func loadSprite(path string, framesWide, framesHigh int) (*sprite.Context, error) {
-	i, err := sprite.Load(path)
+func loadSprite(name string, framesWide, framesHigh int) (*sprite.Context, error) {
+	imgFile, err := gen.Asset(name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not load asset %s: %v", name, err)
 	}
+	i, _, err := image.Decode(bytes.NewReader(imgFile))
+	if err != nil {
+		return nil, fmt.Errorf("could not decode file %s: %v", name, err)
+	}
+
 	s, err := sprite.New(i, framesWide, framesHigh)
 	if err != nil {
 		return nil, err

@@ -23,9 +23,13 @@ import (
 	"runtime"
 
 	"github.com/hurricanerix/FlappyDisk/game"
+	"github.com/hurricanerix/FlappyDisk/gen"
 	"github.com/hurricanerix/shade/display"
+	sgen "github.com/hurricanerix/shade/gen"
 	"github.com/hurricanerix/shade/splash"
 )
+
+//go:generate ./gen_build_info.sh
 
 var gitURL = "https://github.com/hurricanerix/FlappyDisk"
 
@@ -56,9 +60,12 @@ func main() {
 		fmt.Printf("Project code can be found at: %s\n", gitURL)
 		fmt.Printf("Build Info:\n")
 		fmt.Printf("TODO: add build info back")
-		// fmt.Printf("  %s\n", gen.Version)
-		// fmt.Printf("  built on %s\n", gen.BuildDate)
-		// fmt.Printf("  built from %s/commit/%s\n", gitURL, gen.BuildHash)
+		fmt.Printf("  %s\n", gen.Version)
+		fmt.Printf("  built on %s\n", gen.BuildDate)
+		fmt.Printf("  built from %s/commit/%s\n", gitURL, gen.BuildHash)
+		fmt.Printf("  built using Shade SDK\n")
+		fmt.Printf("	%s\n", sgen.Version)
+		fmt.Printf("	built from %s/commit/%s\n", sgen.GitURL, sgen.Hash)
 		os.Exit(0)
 	}
 
