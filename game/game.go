@@ -164,7 +164,7 @@ func loadSprite(name string, framesWide, framesHigh int) (*sprite.Context, error
 		return nil, fmt.Errorf("could not decode file %s: %v", name, err)
 	}
 
-	s, err := sprite.New(i, framesWide, framesHigh)
+	s, err := sprite.New(i, nil, framesWide, framesHigh)
 	if err != nil {
 		return nil, err
 	}
