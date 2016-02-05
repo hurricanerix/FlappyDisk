@@ -20,6 +20,7 @@ import (
 	"math/rand"
 	"runtime"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/shade/shapes"
 	"github.com/hurricanerix/shade/sprite"
 )
@@ -91,30 +92,30 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 // Draw TODO doc
 func (w *Wall) Draw() {
 	for i := 32.0 * 3; i < 480; i += 32 {
-		w.Sprite.DrawFrame(7, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+float32(i), nil, nil, nil, nil)
-		w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+float32(i), nil, nil, nil, nil)
+		w.Sprite.DrawFrame(mgl32.Vec2{7, 0}, mgl32.Vec3{w.TopRect.X, w.TopRect.Y + float32(i), 0}, nil)
+		w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.TopRect.X + 32.0, w.TopRect.Y + float32(i), 0}, nil)
 	}
-	w.Sprite.DrawFrame(0, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*3, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*3, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(1, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*2, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*2, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(2, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*1, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.TopRect.X+32.0, w.TopRect.Y+32.0*1, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(3, 0, 1.0, 1.0, w.TopRect.X, w.TopRect.Y+32.0*0, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(4, 0, 1.0, 1.0, w.TopRect.X+32, w.TopRect.Y+32.0*0, nil, nil, nil, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{0, 0}, mgl32.Vec3{w.TopRect.X, w.TopRect.Y + 32.0*3, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.TopRect.X + 32.0, w.TopRect.Y + 32.0*3, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{1, 0}, mgl32.Vec3{w.TopRect.X, w.TopRect.Y + 32.0*2, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.TopRect.X + 32.0, w.TopRect.Y + 32.0*2, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{2, 0}, mgl32.Vec3{w.TopRect.X, w.TopRect.Y + 32.0*1, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.TopRect.X + 32.0, w.TopRect.Y + 32.0*1, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{3, 0}, mgl32.Vec3{w.TopRect.X, w.TopRect.Y + 32.0*0, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{4, 0}, mgl32.Vec3{w.TopRect.X + 32, w.TopRect.Y + 32.0*0, 0}, nil)
 
 	// bottom resistor
-	w.Sprite.DrawFrame(5, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*1, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(6, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*1, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(0, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32*2, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32*2, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(1, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*3, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*3, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(2, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-32.0*4, nil, nil, nil, nil)
-	w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-32.0*4, nil, nil, nil, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{5, 0}, mgl32.Vec3{w.BottomRect.X, w.BottomRect.Y - 32*1, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{6, 0}, mgl32.Vec3{w.BottomRect.X + 32.0, w.BottomRect.Y - 32.0*1, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{0, 0}, mgl32.Vec3{w.BottomRect.X, w.BottomRect.Y - 32*2, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.BottomRect.X + 32.0, w.BottomRect.Y - 32*2, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{1, 0}, mgl32.Vec3{w.BottomRect.X, w.BottomRect.Y - 32.0*3, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.BottomRect.X + 32.0, w.BottomRect.Y - 32.0*3, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{2, 0}, mgl32.Vec3{w.BottomRect.X, w.BottomRect.Y - 32.0*4, 0}, nil)
+	w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.BottomRect.X + 32.0, w.BottomRect.Y - 32.0*4, 0}, nil)
 	for i := 32 * 5; i < 32*13; i += 32 {
-		w.Sprite.DrawFrame(7, 0, 1.0, 1.0, w.BottomRect.X, w.BottomRect.Y-float32(i), nil, nil, nil, nil)
-		w.Sprite.DrawFrame(8, 0, 1.0, 1.0, w.BottomRect.X+32.0, w.BottomRect.Y-float32(i), nil, nil, nil, nil)
+		w.Sprite.DrawFrame(mgl32.Vec2{7, 0}, mgl32.Vec3{w.BottomRect.X, w.BottomRect.Y - float32(i), 0}, nil)
+		w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.BottomRect.X + 32.0, w.BottomRect.Y - float32(i), 0}, nil)
 	}
 }
 

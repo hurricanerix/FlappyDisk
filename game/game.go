@@ -103,6 +103,8 @@ func (c *Context) Main(screen *display.Context, config Config) {
 
 	sprites.Bind(c.Screen.Program)
 	for running := true; running; {
+		screen.Fill(200.0/256.0, 200/256.0, 200/256.0)
+
 		p.Alive = true
 		dt := clock.Tick(30)
 
@@ -123,11 +125,11 @@ func (c *Context) Main(screen *display.Context, config Config) {
 		}
 
 		sprites.Update(dt/1000.0, c.Walls)
-		screen.Fill(200.0/256.0, 200/256.0, 200/256.0)
+
 		//background.Draw(0, 0)
 		if p.Alive == false {
 			msg := "You Died!"
-			font.DrawText(250, 250, 2.0, 2.0, nil, msg)
+			font.DrawText(mgl32.Vec3{250, 250, 0}, &sprite.Effects{Scale: mgl32.Vec3{2.0, 2.0, 1.0}}, msg)
 			if !config.Cheat {
 				running = false
 			}
@@ -137,15 +139,16 @@ func (c *Context) Main(screen *display.Context, config Config) {
 
 		// TODO: implement score
 		msg := fmt.Sprintf("%d", 0)
-		w, h := font.SizeText(3.0, 3.0, msg)
-		font.DrawText(screen.Width/2-w/2, screen.Height-h, 3.0, 3.0, nil, msg)
+		effect := sprite.Effects{Scale: mgl32.Vec3{3.0, 3.0, 1.0}}
+		w, h := font.SizeText(&effect, msg)
+		font.DrawText(mgl32.Vec3{screen.Width/2 - w/2, screen.Height - h, 0}, &effect, msg)
 
 		if config.Cheat {
 			msg := "Dev Mode!\n"
 			msg += fmt.Sprintf("Pos: %.0f, %.0f\n", p.Rect.X, p.Rect.Y)
 			msg += fmt.Sprintf("Status: %t\n", p.Alive)
-			_, h := font.SizeText(1.0, 1.0, msg)
-			font.DrawText(0, 480-h, 2.0, 2.0, &mgl32.Vec4{0.0, 0.0, 0.0, 0.5}, msg)
+			_, h := font.SizeText(nil, msg)
+			font.DrawText(mgl32.Vec3{0, 480 - h, 0}, nil, msg)
 		}
 		screen.Flip()
 

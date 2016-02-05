@@ -21,6 +21,7 @@ import (
 	"runtime"
 
 	"github.com/go-gl/glfw/v3.1/glfw"
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/hurricanerix/shade/events"
 	"github.com/hurricanerix/shade/shapes"
 	"github.com/hurricanerix/shade/sprite"
@@ -101,7 +102,7 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 
 // Draw TODO doc
 func (p *Player) Draw() {
-	p.Sprite.Draw(p.Rect.X, p.Rect.Y)
+	p.Sprite.Draw(mgl32.Vec3{p.Rect.X, p.Rect.Y, 0}, nil)
 }
 
 // Bounds TODO doc
