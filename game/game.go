@@ -135,7 +135,7 @@ func (c *Context) Main(screen *display.Context, config Config) {
 			}
 		}
 
-		sprites.Draw()
+		sprites.Draw(nil)
 
 		// TODO: implement score
 		msg := fmt.Sprintf("%d", 0)

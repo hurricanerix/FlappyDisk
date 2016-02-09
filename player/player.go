@@ -101,7 +101,7 @@ func (p *Player) Update(dt float32, g *sprite.Group) {
 }
 
 // Draw TODO doc
-func (p *Player) Draw() {
+func (p *Player) Draw(e *sprite.Effects) {
 	p.Sprite.Draw(mgl32.Vec3{p.Rect.X, p.Rect.Y, 0}, nil)
 }
 

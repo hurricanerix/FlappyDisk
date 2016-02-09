@@ -90,7 +90,7 @@ func (w *Wall) Update(dt float32, g *sprite.Group) {
 }
 
 // Draw TODO doc
-func (w *Wall) Draw() {
+func (w *Wall) Draw(e *sprite.Effects) {
 	for i := 32.0 * 3; i < 480; i += 32 {
 		w.Sprite.DrawFrame(mgl32.Vec2{7, 0}, mgl32.Vec3{w.TopRect.X, w.TopRect.Y + float32(i), 0}, nil)
 		w.Sprite.DrawFrame(mgl32.Vec2{8, 0}, mgl32.Vec3{w.TopRect.X + 32.0, w.TopRect.Y + float32(i), 0}, nil)
